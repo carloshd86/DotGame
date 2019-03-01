@@ -7,29 +7,45 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_video.h>
 
 #define mSdlWindow  static_cast<SDL_Window *>(mWindow.pWindow)
 #define mSdlContext static_cast<SDL_GLContext *>(mContext.pContext)
 
-SdlWindowManager::SdlWindowManager(const char * backgroundImage) : 
-	mBackgroundImage (backgroundImage),
-	mBackground      (nullptr),
-	mBackgroundR     (1.f),
-	mBackgroundG     (1.f),
-	mBackgroundB     (1.f),
-	mInitialized     (false), 
-	mEnded           (false) {}
+
+SdlWindowManager * SdlWindowManager::mInstance = nullptr;
 
 // *************************************************
 
 SdlWindowManager::SdlWindowManager() : 
-	SdlWindowManager ("") {}
+	mWindowSurface   (nullptr),
+	mBackgroundImage (""),
+	mBackground      (nullptr),
+	mBackgroundR     (0.f),
+	mBackgroundG     (0.f),
+	mBackgroundB     (0.f),
+	mInitialized     (false), 
+	mEnded           (false) 
+{
+	mWindow.pWindow   = nullptr;
+	mContext.pContext = nullptr;
+}
 
 // *************************************************
 
 SdlWindowManager::~SdlWindowManager()
 {
 	if (mInitialized && !mEnded) End();
+}
+
+// *************************************************
+
+SdlWindowManager * SdlWindowManager::Instance() {
+	if (!mInstance) {
+		mInstance = GAME_NEW(SdlWindowManager, ());
+	}
+
+	return mInstance;
 }
 
 // *************************************************
@@ -58,21 +74,24 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 		/* Create our window centered at 512x512 resolution */
-		mWindow.pWindow = SDL_CreateWindow("Dot Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 512, 512, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		mWindow.pWindow = SDL_CreateWindow("Dot Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (!mSdlWindow) {
 			std::cout << "Unable to create window" << std::endl;
 			SDL_Quit();
 			return GE_Err::KO;
 		}
 
-		//checkSDLError(__LINE__);
+		mWindowSurface = SDL_GetWindowSurface(mSdlWindow);
+		SDL_FillRect(mWindowSurface, NULL, SDL_MapRGB(mWindowSurface->format, mBackgroundR, mBackgroundG, mBackgroundB));
+		SDL_UpdateWindowSurface(mSdlWindow);
 
 		/* Create our opengl context and attach it to our window */
 		mContext.pContext = SDL_GL_CreateContext(mSdlWindow);
-		//checkSDLError(__LINE__);
 
 		/* This makes our buffer swap syncronized with the monitor's vertical refresh */
 		SDL_GL_SetSwapInterval(1);
+
+		SDL_AddEventWatch(SdlWindowManager::EventFilter, mSdlWindow);
 
 		mInitialized = true;
 	}
@@ -96,6 +115,10 @@ IWindowManager::GE_Err SdlWindowManager::End()
 		SDL_GL_DeleteContext(mSdlContext);
 		SDL_DestroyWindow(mSdlWindow);
 		SDL_Quit();
+
+		mWindowSurface    = nullptr;
+		mWindow.pWindow   = nullptr;
+		mContext.pContext = nullptr;
 
 		mInitialized = false;
 	}
@@ -196,18 +219,18 @@ void SdlWindowManager::RenderSprite(ISprite * sprite)
 
 // *************************************************
 
-void SdlWindowManager::RenderTexture(Vec2 pos, Vec2 size, SDL_Surface* tex) {
+void SdlWindowManager::RenderTexture(Vec2 pos, Vec2 size, SDL_Surface* tex) 
+{
 	if (tex) {
 		SDL_Rect rcDest = { static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y) };
-		SDL_BlitSurface(tex, NULL, SDL_GetWindowSurface(mSdlWindow), &rcDest);
-		// something like SDL_UpdateRect(surface, x_pos, y_pos, image->w, image->h); is missing here
-		//SDL_UpdateWindowSurface( gWindow );
+		SDL_BlitSurface(tex, NULL, mWindowSurface, &rcDest);
+		SDL_UpdateWindowSurface(mSdlWindow);
 	}
 }
 
 // *************************************************
 
-void SdlWindowManager::SetBackgroundImage(const char * backgroundImage)
+void SdlWindowManager::SetBackgroundImage(const char * backgroundImage) 
 {
 	if(!mBackgroundImage.empty()) SDL_FreeSurface(mBackground);
 	mBackgroundImage = backgroundImage;
@@ -216,7 +239,7 @@ void SdlWindowManager::SetBackgroundImage(const char * backgroundImage)
 
 // *************************************************
 
-void SdlWindowManager::SetBackgroundColor(float r, float g, float b)
+void SdlWindowManager::SetBackgroundColor(float r, float g, float b) 
 {
 	mBackgroundR = r;
 	mBackgroundG = g;
@@ -225,7 +248,95 @@ void SdlWindowManager::SetBackgroundColor(float r, float g, float b)
 
 // *************************************************
 
-Vec2 SdlWindowManager::GetWorldSize()
+Vec2 SdlWindowManager::GetWorldSize() 
 {
 	return Vec2(SCR_WIDTH, SCR_HEIGHT);
+}
+
+// *************************************************
+
+bool SdlWindowManager::WindowShouldClose() 
+{
+	SDL_Event e;
+	return (SDL_PollEvent(&e) && e.type == SDL_QUIT);
+}
+
+// *************************************************
+
+void SdlWindowManager::PumpEvents() {
+	SDL_PumpEvents();
+}
+
+// *************************************************
+
+int SdlWindowManager::EventFilter(void* userdata, SDL_Event* event) {
+
+	if (mInstance) {
+		if (mInstance->mInputCallbacks.find(static_cast<SDL_EventType>(event->type)) != mInstance->mInputCallbacks.end()) {
+			auto& callbackVector = mInstance->mInputCallbacks[static_cast<SDL_EventType>(event->type)];
+
+			// TODO Por cada tipo de evento, llamar con los parámettros que corresponda.
+			switch (event->type) {
+			case SDL_WINDOWEVENT: {
+				SDL_WindowEvent e = event->window;
+				switch (e.event) {
+				case SDL_WINDOWEVENT_ENTER:
+					std::cout << "window enter\n";
+					break;
+				case SDL_WINDOWEVENT_LEAVE:
+					std::cout << "window leave\n";
+					break;
+				default:
+					break;
+				}
+				break;
+			}
+			case SDL_MOUSEMOTION: {
+				SDL_MouseMotionEvent e = event->motion;
+				std::cout << e.x << ", " << e.y << std::endl;
+				if (e.x < 20) {
+					std::cout << "relative mode ON\n";
+					SDL_SetRelativeMouseMode(SDL_TRUE);
+					SDL_PumpEvents();
+					SDL_FlushEvent(SDL_WINDOWEVENT_LEAVE);
+				}
+				break;
+			}
+			case SDL_MOUSEBUTTONDOWN: {
+				SDL_MouseButtonEvent e = event->button;
+				if (e.button == SDL_BUTTON_RIGHT) {
+					SDL_SetRelativeMouseMode(SDL_GetRelativeMouseMode() ? SDL_FALSE
+						: SDL_TRUE);
+					if (!SDL_GetRelativeMouseMode())
+						SDL_WarpMouseInWindow(sdl_window, 800 / 2, 600 / 2);
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+// *************************************************
+
+void SdlWindowManager::SetMouseMoveCallback(InputCallbackFun fun) {
+	mInputCallbacks[SDL_MOUSEMOTION].push_back(fun);
+}
+
+// *************************************************
+
+void SdlWindowManager::SetMouseClickCallback(InputCallbackFun fun) {
+	mInputCallbacks[SDL_MOUSEMOTION].push_back(fun);
+}
+
+// *************************************************
+
+void SdlWindowManager::SetKeyPressedCallback(InputCallbackFun fun) {
+	mInputCallbacks[SDL_KEYUP].push_back(fun);
 }

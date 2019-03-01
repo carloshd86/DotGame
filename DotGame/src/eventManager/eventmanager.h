@@ -6,32 +6,24 @@ class IEventManager
 {
 
 public:
-
 	enum EM_Err  
 	{
-		KO,
-		OK
+		KO = 0,
+		OK = 1
 	};
 
 	enum EM_Event 
 	{
-		MoveUp,
-		MoveDown,
-		MoveLeft,
-		MoveRight,
-		SinglePressUp,
-		SinglePressDown,
-		SinglePressLeft,
-		SinglePressRight,
-		SinglePressEscape,
-		SinglePressEnter
+		KeyPressed,
+		MouseClick,
+		MouseMove,
+		WindowFocusChanged,
+		All
 	};
 
 	class IListener 
 	{
-
 	public:
-
 		virtual bool ProcessEvent (EM_Event event) = 0;
 	};
 

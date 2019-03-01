@@ -7,14 +7,16 @@
 #include "memorycontrol.h"
 
 
-ApplicationManager::ApplicationManager() : 
-	mDesiredMode      (AM_Menu),
-	m_pGameMode       (nullptr),
-	mLang             (DEFAULT_LANG),
-	mAudioActivated   (true) {}
+ApplicationManager * ApplicationManager::mInstance = nullptr;
 
 // *************************************************
-//
+
+ApplicationManager::ApplicationManager() : 
+	mDesiredMode    (AM_Menu),
+	m_pGameMode     (nullptr),
+	mLang           (DEFAULT_LANG),
+	mAudioActivated (true) {}
+
 // *************************************************
 
 ApplicationManager::~ApplicationManager()
@@ -23,7 +25,15 @@ ApplicationManager::~ApplicationManager()
 }
 
 // *************************************************
-//
+
+ApplicationManager * ApplicationManager::Instance() {
+	if (!mInstance) {
+		mInstance = GAME_NEW(ApplicationManager, ());
+	}
+
+	return mInstance;
+}
+
 // *************************************************
 
 void ApplicationManager::SwitchMode(IdMode mode)
@@ -31,8 +41,6 @@ void ApplicationManager::SwitchMode(IdMode mode)
 	mDesiredMode = mode;
 }
 
-// *************************************************
-//
 // *************************************************
 
 void ApplicationManager::ManageModeChange()
@@ -61,16 +69,12 @@ void ApplicationManager::ManageModeChange()
 }
 
 // *************************************************
-//
-// *************************************************
 
 void ApplicationManager::ProcessInput()
 {
 	m_pGameMode->ProcessInput();
 }
 
-// *************************************************
-//
 // *************************************************
 
 void ApplicationManager::Run(float deltaTime)
@@ -79,16 +83,12 @@ void ApplicationManager::Run(float deltaTime)
 }
 
 // *************************************************
-//
-// *************************************************
 
 void ApplicationManager::Render()
 {
 	m_pGameMode->Render();
 }
 
-// *************************************************
-//
 // *************************************************
 
 Properties::P_Language ApplicationManager::GetLang() const
@@ -97,8 +97,6 @@ Properties::P_Language ApplicationManager::GetLang() const
 }
 
 // *************************************************
-//
-// *************************************************
 
 void ApplicationManager::SetLang(Properties::P_Language lang)
 {
@@ -106,16 +104,12 @@ void ApplicationManager::SetLang(Properties::P_Language lang)
 }
 
 // *************************************************
-//
-// *************************************************
 
 bool ApplicationManager::IsAudioActivated() const
 {
 	return mAudioActivated;
 }
 
-// *************************************************
-//
 // *************************************************
 
 void ApplicationManager::SetAudioActivated(bool audioActivated)

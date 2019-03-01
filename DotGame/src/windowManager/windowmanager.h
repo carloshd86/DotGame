@@ -35,6 +35,8 @@ public:
 	virtual void      SetBackgroundImage (const char * backgroundImage)                                                                                   = 0;
 	virtual void      SetBackgroundColor (float r, float g, float b)                                                                                      = 0;
 	virtual Vec2      GetWorldSize       ()                                                                                                               = 0;
+	virtual bool      WindowShouldClose  ()                                                                                                               = 0;
+	virtual void      PumpEvents         ()                                                                                                               = 0;
 };
 
 #endif

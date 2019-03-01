@@ -63,6 +63,9 @@
     <ClCompile Include="..\src\graphics\sdlsprite.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp">
+      <Filter>eventManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\globals\asserts.h">
@@ -121,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="..\src\graphics\sprite.h">
       <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\eventManager\sdlinputmanager.h">
+      <Filter>eventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\eventManager\events.h">
+      <Filter>eventManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

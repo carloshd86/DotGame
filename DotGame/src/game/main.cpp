@@ -1,5 +1,3 @@
-#define SDL_MAIN_HANDLED
-
 #include "globals.h"
 #include "core.h"
 //#include "font.h"
@@ -7,6 +5,7 @@
 #include "sdlwindowmanager.h"
 //#include "swalibsoundmanager.h"
 //#include "sysinputmanager.h"
+#include "asserts.h"
 #include "memorycontrol.h"
 #include <SDL.h>
 
@@ -22,14 +21,14 @@ IEventManager      * g_pEventManager;
 
 //-----------------------------------------------------------------------------
 
-int main()
+int main(int argc, char *argv[])
 {
-	SDL_SetMainReady();
+	g_pApplicationManager = ApplicationManager::Instance();
+	GAME_ASSERT(g_pApplicationManager);
 
-	g_pApplicationManager = GAME_NEW(ApplicationManager, ());
-
-	/*g_pWindowManager = GAME_NEW(SwalibGraphicsEngine, ());
-	g_pWindowManager->Init();*/
+	g_pWindowManager = SdlWindowManager::Instance();
+	GAME_ASSERT(g_pWindowManager);
+	GAME_ASSERT(g_pWindowManager->Init());
 
 	/*g_pSoundManager = GAME_NEW(SwalibSoundManager, ());
 	g_pSoundManager->InitSound();*/
@@ -48,10 +47,15 @@ int main()
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	float deltaTime = 1 / 60.f;
+	float deltaTime = 0.f;
+	Uint32 lastMilliseconds = 0;
+	Uint32 currentMilliseconds = 0;
 
-	//while (!SYS_GottaQuit())
-	//{
+	while (!g_pWindowManager->WindowShouldClose()) 
+	{
+		currentMilliseconds = SDL_GetTicks();
+		deltaTime = (currentMilliseconds - lastMilliseconds) / 1000.f;
+		lastMilliseconds = currentMilliseconds;
 	//	g_pApplicationManager->ManageModeChange();
 
 	//	//ProcessInput
@@ -63,12 +67,9 @@ int main()
 	//	// Render
 	//	g_pApplicationManager->Render();
 
-	//	SYS_Show();
-
-	//	// Keep system running
-	//	SYS_Pump();
-	//	SYS_Sleep(17);
-	//}
+		SDL_Delay(17);
+		g_pWindowManager->PumpEvents();
+	}
 
 	//FONT_End();
 	//g_pSoundManager->EndSound();

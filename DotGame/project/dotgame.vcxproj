@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\applicationManager\applicationmanager.cpp" />
     <ClCompile Include="..\src\entities\entity.cpp" />
+    <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\main.cpp" />
     <ClCompile Include="..\src\graphics\sdlsprite.cpp" />
@@ -34,7 +35,9 @@
     <ClInclude Include="..\src\core\core.h" />
     <ClInclude Include="..\src\entities\entity.h" />
     <ClInclude Include="..\src\eventManager\eventmanager.h" />
+    <ClInclude Include="..\src\eventManager\events.h" />
     <ClInclude Include="..\src\eventManager\gameinputmanager.h" />
+    <ClInclude Include="..\src\eventManager\sdlinputmanager.h" />
     <ClInclude Include="..\src\game\game.h" />
     <ClInclude Include="..\src\globals\asserts.h" />
     <ClInclude Include="..\src\globals\globals.h" />
@@ -112,6 +115,7 @@
     <Link>
       <AdditionalLibraryDirectories>${ProjectDir}../../../lib/sdl_2.0.9/x86;${ProjectDir}../../../lib/sdl_image_2.0.4/x86</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

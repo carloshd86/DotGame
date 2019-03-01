@@ -9,9 +9,9 @@
 class ApplicationManager
 {
 public:
-
-	ApplicationManager();
 	~ApplicationManager();
+
+	static ApplicationManager * Instance();
 
 	void SwitchMode        (IdMode mode);
 	void ManageModeChange  ();
@@ -26,6 +26,9 @@ public:
 
 	
 private:
+	ApplicationManager();
+
+	static ApplicationManager *mInstance;
 
 	IdMode                  mDesiredMode;
 	ApplicationMode        *m_pGameMode;
