@@ -3,6 +3,7 @@
 #include "core.h"
 #include "sdlsprite.h"
 #include "memorycontrol.h"
+#include "asserts.h"
 #include <iostream>
 #include <GL/glew.h>
 #include <SDL.h>
@@ -25,7 +26,7 @@ SdlWindowManager::SdlWindowManager() :
 	mBackgroundG     (0.f),
 	mBackgroundB     (0.f),
 	mInitialized     (false), 
-	mEnded           (false) 
+	mEnded           (false)
 {
 	mWindow.pWindow   = nullptr;
 	mContext.pContext = nullptr;
@@ -82,7 +83,7 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 		}
 
 		mWindowSurface = SDL_GetWindowSurface(mSdlWindow);
-		SDL_FillRect(mWindowSurface, NULL, SDL_MapRGB(mWindowSurface->format, mBackgroundR, mBackgroundG, mBackgroundB));
+		SDL_FillRect(mWindowSurface, NULL, SDL_MapRGB(mWindowSurface->format,static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255)));
 		SDL_UpdateWindowSurface(mSdlWindow);
 
 		/* Create our opengl context and attach it to our window */
@@ -90,8 +91,6 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 
 		/* This makes our buffer swap syncronized with the monitor's vertical refresh */
 		SDL_GL_SetSwapInterval(1);
-
-		SDL_AddEventWatch(SdlWindowManager::EventFilter, mSdlWindow);
 
 		mInitialized = true;
 	}
@@ -257,86 +256,11 @@ Vec2 SdlWindowManager::GetWorldSize()
 
 bool SdlWindowManager::WindowShouldClose() 
 {
-	SDL_Event e;
-	return (SDL_PollEvent(&e) && e.type == SDL_QUIT);
+	return gQuit;
 }
 
 // *************************************************
 
 void SdlWindowManager::PumpEvents() {
 	SDL_PumpEvents();
-}
-
-// *************************************************
-
-int SdlWindowManager::EventFilter(void* userdata, SDL_Event* event) {
-
-	if (mInstance) {
-		if (mInstance->mInputCallbacks.find(static_cast<SDL_EventType>(event->type)) != mInstance->mInputCallbacks.end()) {
-			auto& callbackVector = mInstance->mInputCallbacks[static_cast<SDL_EventType>(event->type)];
-
-			// TODO Por cada tipo de evento, llamar con los parámettros que corresponda.
-			switch (event->type) {
-			case SDL_WINDOWEVENT: {
-				SDL_WindowEvent e = event->window;
-				switch (e.event) {
-				case SDL_WINDOWEVENT_ENTER:
-					std::cout << "window enter\n";
-					break;
-				case SDL_WINDOWEVENT_LEAVE:
-					std::cout << "window leave\n";
-					break;
-				default:
-					break;
-				}
-				break;
-			}
-			case SDL_MOUSEMOTION: {
-				SDL_MouseMotionEvent e = event->motion;
-				std::cout << e.x << ", " << e.y << std::endl;
-				if (e.x < 20) {
-					std::cout << "relative mode ON\n";
-					SDL_SetRelativeMouseMode(SDL_TRUE);
-					SDL_PumpEvents();
-					SDL_FlushEvent(SDL_WINDOWEVENT_LEAVE);
-				}
-				break;
-			}
-			case SDL_MOUSEBUTTONDOWN: {
-				SDL_MouseButtonEvent e = event->button;
-				if (e.button == SDL_BUTTON_RIGHT) {
-					SDL_SetRelativeMouseMode(SDL_GetRelativeMouseMode() ? SDL_FALSE
-						: SDL_TRUE);
-					if (!SDL_GetRelativeMouseMode())
-						SDL_WarpMouseInWindow(sdl_window, 800 / 2, 600 / 2);
-				}
-				break;
-			}
-			default:
-				break;
-			}
-		}
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
-
-// *************************************************
-
-void SdlWindowManager::SetMouseMoveCallback(InputCallbackFun fun) {
-	mInputCallbacks[SDL_MOUSEMOTION].push_back(fun);
-}
-
-// *************************************************
-
-void SdlWindowManager::SetMouseClickCallback(InputCallbackFun fun) {
-	mInputCallbacks[SDL_MOUSEMOTION].push_back(fun);
-}
-
-// *************************************************
-
-void SdlWindowManager::SetKeyPressedCallback(InputCallbackFun fun) {
-	mInputCallbacks[SDL_KEYUP].push_back(fun);
 }

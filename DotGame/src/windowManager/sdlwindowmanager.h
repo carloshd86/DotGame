@@ -8,9 +8,6 @@
 
 class SdlSprite;
 struct SDL_Surface;
-union SDL_Event;
-
-typedef void (*InputCallbackFun) (void*);
 
 class SdlWindowManager : public IWindowManager
 {
@@ -32,17 +29,11 @@ public:
 	Vec2      GetWorldSize       ();
 	bool      WindowShouldClose  ();
 	void      PumpEvents         ();
-
-	void SetMouseMoveCallback  (InputCallbackFun fun);
-	void SetMouseClickCallback (InputCallbackFun fun);
-	void SetKeyPressedCallback (InputCallbackFun fun);
-
+	
 private:
 	SdlWindowManager();
 	
 	static SdlWindowManager *mInstance;
-
-	static int EventFilter(void* userdata, SDL_Event* event);
 
 	const float	 GAME_BACKGROUND_WIDTH  = 128;
 	const float	 GAME_BACKGROUND_HEIGHT = 128;
@@ -59,7 +50,6 @@ private:
 	float                                                  mBackgroundB;
 	std::vector<std::pair<ISprite *, bool>>                mSprites;
 	std::vector<std::pair<std::string, SDL_Surface*>>      mTextures;
-	std::map<SDL_EventType, std::vector<InputCallbackFun>> mInputCallbacks;
 
 	void RenderTexture(Vec2 pos, Vec2 size, SDL_Surface* tex);
 };

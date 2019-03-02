@@ -72,17 +72,11 @@ private:
 
 // *************************************************
 
-class EventWindowFocusChanged : public Event {
+class EventQuit : public Event {
 
 public:
-	EventWindowFocusChanged(bool focused) :
-		Event(IEventManager::EM_Event::WindowFocusChanged),
-		mFocused(focused) {}
-
-	bool GetFocused() const { return mFocused; }
-
-private:
-	bool mFocused;
+	EventQuit() :
+		Event(IEventManager::EM_Event::Quit) {}
 };
 
 #endif

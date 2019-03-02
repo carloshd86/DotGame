@@ -18,8 +18,13 @@ extern IWindowManager     * g_pWindowManager;
 extern ISoundManager      * g_pSoundManager;
 extern IEventManager      * g_pEventManager;
 
+extern bool  gQuit;
+extern float gMouseX;
+extern float gMouseY;
+
 const int SCR_WIDTH  = 1280;
 const int SCR_HEIGHT = 720;
+
 	
 const std::string DATA_FOLDER = "../data/";
 

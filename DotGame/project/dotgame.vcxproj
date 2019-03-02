@@ -20,6 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\applicationManager\applicationmanager.cpp" />
+    <ClCompile Include="..\src\applicationModes\applicationmodegame.cpp" />
+    <ClCompile Include="..\src\applicationModes\applicationmodegameover.cpp" />
+    <ClCompile Include="..\src\applicationModes\applicationmodeintro.cpp" />
     <ClCompile Include="..\src\entities\entity.cpp" />
     <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
@@ -31,12 +34,14 @@
   <ItemGroup>
     <ClInclude Include="..\src\applicationManager\applicationmanager.h" />
     <ClInclude Include="..\src\applicationModes\applicationmode.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmodegame.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmodegameover.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmodeintro.h" />
     <ClInclude Include="..\src\components\component.h" />
     <ClInclude Include="..\src\core\core.h" />
     <ClInclude Include="..\src\entities\entity.h" />
     <ClInclude Include="..\src\eventManager\eventmanager.h" />
     <ClInclude Include="..\src\eventManager\events.h" />
-    <ClInclude Include="..\src\eventManager\gameinputmanager.h" />
     <ClInclude Include="..\src\eventManager\sdlinputmanager.h" />
     <ClInclude Include="..\src\game\game.h" />
     <ClInclude Include="..\src\globals\asserts.h" />

@@ -66,6 +66,15 @@
     <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp">
       <Filter>eventManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\applicationModes\applicationmodegame.cpp">
+      <Filter>applicationModes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\applicationModes\applicationmodegameover.cpp">
+      <Filter>applicationModes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\applicationModes\applicationmodeintro.cpp">
+      <Filter>applicationModes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\globals\asserts.h">
@@ -88,9 +97,6 @@
     </ClInclude>
     <ClInclude Include="..\src\applicationManager\applicationmanager.h">
       <Filter>applicationManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\eventManager\gameinputmanager.h">
-      <Filter>eventManager</Filter>
     </ClInclude>
     <ClInclude Include="..\src\soundManager\soundmanager.h">
       <Filter>soundManager</Filter>
@@ -130,6 +136,15 @@
     </ClInclude>
     <ClInclude Include="..\src\eventManager\events.h">
       <Filter>eventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmodegame.h">
+      <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmodegameover.h">
+      <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmodeintro.h">
+      <Filter>applicationModes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

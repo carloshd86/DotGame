@@ -1,12 +1,10 @@
 #include "sdlinputmanager.h"
 #include "globals.h"
-#include "sdlwindowmanager.h"
-#include "asserts.h"
+#include "memorycontrol.h"
+#include "events.h"
+#include <SDL.h>
 #include <algorithm>
 #include <utility>
-#include "events.h"
-#include "memorycontrol.h"
-#include <SDL.h>
 
 
 SdlInputManager * SdlInputManager::mInstance;
@@ -14,20 +12,23 @@ SdlInputManager * SdlInputManager::mInstance;
 // *************************************************
 
 SdlInputManager::SdlInputManager() :
-	mInitialized (false) {}
+	mInitialized   (false) {}
 
 // *************************************************
 
-SdlInputManager::~SdlInputManager() {
+SdlInputManager::~SdlInputManager() 
+{
 	if (mInitialized)
 		End();
 }
 
 // *************************************************
 
-SdlInputManager * SdlInputManager::Instance() {
-	if (!mInstance) {
-		mInstance = GAME_NEW(SdlInputManager,());
+SdlInputManager * SdlInputManager::Instance() 
+{
+	if (!mInstance) 
+	{
+		mInstance = GAME_NEW(SdlInputManager, ());
 		mInstance->Init();
 	}
 
@@ -36,24 +37,10 @@ SdlInputManager * SdlInputManager::Instance() {
 
 // *************************************************
 
-IEventManager::EM_Err SdlInputManager::Init() {
-
+IEventManager::EM_Err SdlInputManager::Init() 
+{
 	if (mInitialized)
 		return OK;
-
-	m_pWindowManager = SdlWindowManager::Instance();
-
-	GAME_ASSERT(m_pWindowManager);
-
-	// Setting events
-	// Mouse Move
-	m_pWindowManager->SetMouseMoveCallback(&SdlInputManager::MouseMove);
-
-	// Mouse Click
-	m_pWindowManager->SetMouseClickCallback(&SdlInputManager::MouseClick);
-	
-	// Key Pressed
-	m_pWindowManager->SetKeyPressedCallback(&SdlInputManager::KeyPressed);
 
 	mInitialized = true;
 	return OK;
@@ -61,35 +48,80 @@ IEventManager::EM_Err SdlInputManager::Init() {
 
 // *************************************************
 
-IEventManager::EM_Err SdlInputManager::End() {
-
+IEventManager::EM_Err SdlInputManager::End() 
+{
 	return OK;
 }
 
-// *************************************************
+// ************************************************
 
-IEventManager::EM_Err SdlInputManager::RegisterEvent(IListener * listener, EM_Event e, int priority) {
+void SdlInputManager::UpdateEvents() 
+{
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0) 
+	{
+		EM_Event eventType = GetEventFromSdlEventType(e.type);
 
-	if (EM_Event::All == e)
-		return KO;
-
-	mListeners[e].insert(std::pair<int, IListener *>(priority, listener));
-
-	return OK;
-}
-
-// *************************************************
-
-IEventManager::EM_Err SdlInputManager::UnregisterEvent(IListener * listener, EM_Event e) {
-
-	if (EM_Event::All == e) {
-		for (auto it = mListeners.begin(); it != mListeners.end(); ++it) {
-			EM_Event event = it->first;
-			RemoveListenerForEvent(listener, event);
+		if (mListeners.find(eventType) != mListeners.end())
+		{
+			ListenerVector& listeners = mListeners[eventType];
+			if (listeners.size())
+			{
+				switch (eventType)
+				{
+				case MouseClick:
+				{
+					SendMouseClick(e.button.button, listeners);
+					break;
+				}
+				case MouseMove:
+				{
+					int x = 0, y = 0;
+					SDL_GetMouseState(&x, &y);
+					SendMouseMove(static_cast<float>(x), static_cast<float>(y), listeners);
+					break;
+				}
+				case KeyPressed:
+				{
+					SendKeyPressed(e.key.keysym.sym, listeners);
+					break;
+				}
+				case Quit:
+				{
+					SendQuit(listeners);
+					gQuit = true;
+					break;
+				}
+				default: break;
+				}
+			}
 		}
 	}
-	else {
-		RemoveListenerForEvent(listener, e);
+
+}
+
+// *************************************************
+
+IEventManager::EM_Err SdlInputManager::Register(IListener * listener, EM_Event e) 
+{
+	mListeners[e].push_back(listener);
+	return OK;
+}
+
+// *************************************************
+
+IEventManager::EM_Err SdlInputManager::Unregister(IListener * listener) 
+{
+	auto it = mListeners.begin();
+	while (it != mListeners.end()) 
+	{
+		EM_Event event = it->first;
+		RemoveListenerForEvent(listener, event);
+
+		if (mListeners[event].empty())
+			it = mListeners.erase(it);
+		else
+			++it;
 	}
 
 	return OK;
@@ -97,68 +129,83 @@ IEventManager::EM_Err SdlInputManager::UnregisterEvent(IListener * listener, EM_
 
 // *************************************************
 
-SdlInputManager::ListenerMap& SdlInputManager::GetListenerMap() {
+SdlInputManager::ListenerMap& SdlInputManager::GetListenerMap() 
+{
 	return mListeners;
 }
 
 // *************************************************
 
-void SdlInputManager::RemoveListenerForEvent(IListener * listener, EM_Event e) {
-
-	for(auto prioritiesIt = mListeners[e].begin(); prioritiesIt != mListeners[e].end(); ++prioritiesIt) {
-		if (prioritiesIt->second == listener) {
-			prioritiesIt = mListeners[e].erase(prioritiesIt);
+void SdlInputManager::RemoveListenerForEvent(IListener * listener, EM_Event e) 
+{
+	for (auto it = mListeners[e].begin(); it != mListeners[e].end(); ++it)
+	{
+		if (*it == listener)
+		{
+			it = mListeners[e].erase(it);
 			break;
 		}
 	}
-
 }
 
-// *************************************************
+// *************************************************ç
 
-int SdlInputManager::MouseMove(void* userdata, SDL_Event* event) {
-	ListenerMap& listenerMap = mInstance->GetListenerMap();
-
-	if (listenerMap[EM_Event::MouseMove].size()) {
-		for (auto prioritiesIt = listenerMap[EM_Event::MouseMove].begin(); prioritiesIt != listenerMap[EM_Event::MouseMove].end(); ++prioritiesIt) {
-			prioritiesIt->second->ProcessEvent(EventMouseMove(static_cast<float>(xpos), static_cast<float>(ypos)));
-		}
+IEventManager::EM_Event SdlInputManager::GetEventFromSdlEventType(uint32_t type) const
+{
+	EM_Event event = None;
+	switch (type) 
+	{
+		case SDL_MOUSEBUTTONDOWN: event = MouseClick; break;
+		case SDL_MOUSEMOTION    : event = MouseMove;  break;
+		case SDL_KEYUP          : event = KeyPressed; break;
+		case SDL_QUIT           : event = Quit;       break;
+		default                 : event = None;       break;
 	}
-
-	return 0;
+	return event;
 }
 
-// *************************************************
 
-int SdlInputManager::MouseClick(void* userdata, SDL_Event* event) {
-	ListenerMap& listenerMap = mInstance->GetListenerMap();
-
+void SdlInputManager::SendMouseClick(uint8_t button, ListenerVector& listeners)
+{
 	EventMouseClick::EMouseButton mouseButton = EventMouseClick::EMouseButton::NotSupported;
-	switch (event->type) {
-		case GLFW_MOUSE_BUTTON_LEFT:   mouseButton = EventMouseClick::EMouseButton::Left;   break;
-		case GLFW_MOUSE_BUTTON_MIDDLE: mouseButton = EventMouseClick::EMouseButton::Middle; break;
-		case GLFW_MOUSE_BUTTON_RIGHT:  mouseButton = EventMouseClick::EMouseButton::Right;  break;
+	switch (button) {
+	case SDL_BUTTON_LEFT  : mouseButton = EventMouseClick::EMouseButton::Left;   break;
+	case SDL_BUTTON_MIDDLE: mouseButton = EventMouseClick::EMouseButton::Middle; break;
+	case SDL_BUTTON_RIGHT : mouseButton = EventMouseClick::EMouseButton::Right;  break;
 	}
 
-	if (listenerMap[EM_Event::MouseClick].size()) {
-		for (auto prioritiesIt = listenerMap[EM_Event::MouseClick].begin(); prioritiesIt != listenerMap[EM_Event::MouseClick].end(); ++prioritiesIt) {
-			prioritiesIt->second->ProcessEvent(EventMouseClick(mouseButton));
-		}
+	for (IListener* listener : listeners)
+	{
+		listener->ProcessEvent(EventMouseClick(mouseButton));
 	}
-
-	return 0;
 }
 
-// *************************************************
+// *************************************************ç
 
-int SdlInputManager::KeyPressed(void* userdata, SDL_Event* event) {
-	ListenerMap& listenerMap = mInstance->GetListenerMap();
-	
-	if (listenerMap[EM_Event::KeyPressed].size()) {
-		for (auto prioritiesIt = listenerMap[EM_Event::KeyPressed].begin(); prioritiesIt != listenerMap[EM_Event::KeyPressed].end(); ++prioritiesIt) {
-			prioritiesIt->second->ProcessEvent(EventKeyPressed(key));
-		}
+void SdlInputManager::SendMouseMove(float mouseX, float mouseY, ListenerVector& listeners)
+{
+	for (IListener* listener : listeners)
+	{
+		listener->ProcessEvent(EventMouseMove(mouseX, mouseY));
 	}
+}
 
-	return 0;
+// *************************************************ç
+
+void SdlInputManager::SendKeyPressed(int32_t key, ListenerVector& listeners)
+{
+	for (IListener* listener : listeners)
+	{
+		listener->ProcessEvent(EventKeyPressed(key));
+	}
+}
+
+// *************************************************ç
+
+void SdlInputManager::SendQuit(ListenerVector& listeners) 
+{
+	for (IListener* listener : listeners)
+	{
+		listener->ProcessEvent(EventQuit());
+	}
 }

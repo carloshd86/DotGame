@@ -3,14 +3,11 @@
 //#include "font.h"
 #include "applicationmanager.h"
 #include "sdlwindowmanager.h"
+#include "sdlinputmanager.h"
 //#include "swalibsoundmanager.h"
-//#include "sysinputmanager.h"
 #include "asserts.h"
 #include "memorycontrol.h"
 #include <SDL.h>
-
-
-//-----------------------------------------------------------------------------
 
 ApplicationManager * g_pApplicationManager;
 Game               * g_pGame;
@@ -18,8 +15,9 @@ Game::GameLevel      g_gameLevel;
 IWindowManager     * g_pWindowManager;
 ISoundManager      * g_pSoundManager;
 IEventManager      * g_pEventManager;
-
-//-----------------------------------------------------------------------------
+bool                 gQuit   = false;
+float                gMouseX = 0.f;
+float                gMouseY = 0.f;
 
 int main(int argc, char *argv[])
 {
@@ -30,10 +28,11 @@ int main(int argc, char *argv[])
 	GAME_ASSERT(g_pWindowManager);
 	GAME_ASSERT(g_pWindowManager->Init());
 
+	g_pEventManager = SdlInputManager::Instance();
+	GAME_ASSERT(g_pEventManager);
+
 	/*g_pSoundManager = GAME_NEW(SwalibSoundManager, ());
 	g_pSoundManager->InitSound();*/
-
-	/*g_pEventManager = SysInputManager::Instance();*/
 
 	/*FONT_Init();*/
 
@@ -56,16 +55,16 @@ int main(int argc, char *argv[])
 		currentMilliseconds = SDL_GetTicks();
 		deltaTime = (currentMilliseconds - lastMilliseconds) / 1000.f;
 		lastMilliseconds = currentMilliseconds;
-	//	g_pApplicationManager->ManageModeChange();
+		g_pApplicationManager->ManageModeChange();
 
-	//	//ProcessInput
-	//	g_pApplicationManager->ProcessInput();
+		//ProcessInput
+		g_pApplicationManager->ProcessInput();
 
-	//	//Run
-	//	g_pApplicationManager->Run(deltaTime);
+		//Run
+		g_pApplicationManager->Run(deltaTime);
 
-	//	// Render
-	//	g_pApplicationManager->Render();
+		// Render
+		g_pApplicationManager->Render();
 
 		SDL_Delay(17);
 		g_pWindowManager->PumpEvents();

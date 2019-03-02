@@ -9,10 +9,10 @@
 struct SDL_Window;
 
 class SdlInputManager : public IEventManager {
-	
 public:
 
-	typedef std::map<EM_Event, std::multimap<int, IListener *>> ListenerMap;
+	typedef std::vector<IListener*>            ListenerVector;
+	typedef std::map<EM_Event, ListenerVector> ListenerMap;
 
 	static SdlInputManager * Instance();
 	~SdlInputManager();
@@ -20,26 +20,27 @@ public:
 	EM_Err Init();
 	EM_Err End();
 
-	EM_Err RegisterEvent   (IListener * listener, EM_Event e);
-	EM_Err UnregisterEvent (IListener * listener, EM_Event e = EM_Event::All);
+	void   UpdateEvents ();
+	EM_Err Register     (IListener * listener, EM_Event e);
+	EM_Err Unregister   (IListener * listener);
 
 	ListenerMap& GetListenerMap();
-
-	static int MouseMove  (void* userdata, SDL_Event* event);
-	static int MouseClick (void* userdata, SDL_Event* event);
-	static int KeyPressed (void* userdata, SDL_Event* event);
 
 private:
 	SdlInputManager();
 
 	static SdlInputManager *mInstance;
 
-	ListenerMap             mListeners;
-	IWindowManager::Window *m_pWindow;
-	SdlWindowManager       *m_pWindowManager;
-	bool                    mInitialized;
+	ListenerMap                mListeners;
+	bool                       mInitialized;
 
-	void RemoveListenerForEvent(IListener * listener, EM_Event e);
+	void RemoveListenerForEvent      (IListener* listener, EM_Event e);
+	EM_Event GetEventFromSdlEventType(uint32_t type) const;
+
+	void SendMouseClick(uint8_t mouseButton, ListenerVector& listeners);
+	void SendMouseMove (float mouseX, float mouseY, ListenerVector& listeners);
+	void SendKeyPressed(int32_t key, ListenerVector& listeners);
+	void SendQuit(ListenerVector& listeners);
 };
 
 #endif
