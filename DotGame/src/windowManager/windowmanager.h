@@ -22,6 +22,11 @@ public:
 		void * pContext;
 	};
 
+	class Renderer {
+	public:
+		void * pRenderer;
+	};
+
 	virtual GE_Err    Init               ()                                                                                                               = 0;
 	virtual GE_Err    End                ()                                                                                                               = 0;
 	virtual void      Render             ()                                                                                                               = 0;
@@ -35,7 +40,9 @@ public:
 	virtual Vec2      GetWorldSize       ()                                                                                                               = 0;
 	virtual bool      WindowShouldClose  ()                                                                                                               = 0;
 	virtual void      PumpEvents         ()                                                                                                               = 0;
-	virtual Window    GetWindow          () const                                                                                                         = 0;
+	virtual Renderer  GetRenderer        () const                                                                                                         = 0;
+	virtual void      SetColor           (float r, float g, float b, float a)                                                                             = 0;
+	virtual void      DrawLine           (float x, float y, float x2, float y2)                                                                           = 0;
 };
 
 #endif

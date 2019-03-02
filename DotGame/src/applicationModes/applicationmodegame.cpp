@@ -87,6 +87,19 @@ void ApplicationModeGame::Run(float deltaTime)
 void ApplicationModeGame::Render()
 {
 	g_pWindowManager->Render();
+
+	g_pWindowManager->SetColor(0.f, 0.f, 0.f, 1.f);
+
+	for (int i = 0; i <= NUM_ROWS; i++)
+	{
+		float newY = GRID_POS_Y + FRAME_HEIGHT * i;
+		g_pWindowManager->DrawLine(GRID_POS_X, newY, GRID_POS_X + FRAME_WIDTH * NUM_COLS, newY);
+	}
+	for (int i = 0; i <= NUM_COLS; i++)
+	{
+		float newX = GRID_POS_X  + FRAME_WIDTH * i;
+		g_pWindowManager->DrawLine(newX, GRID_POS_Y, newX, GRID_POS_Y + FRAME_HEIGHT * NUM_ROWS);
+	}
 }
 
 // *************************************************

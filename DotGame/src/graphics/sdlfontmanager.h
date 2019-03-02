@@ -19,7 +19,6 @@ public:
 	void   SetColor    (float r, float g, float b);
 	void   DrawText    (Vec2 pos, Vec2 size, const char * text);
 	void   DrawText    (Vec2 pos, const char * text);
-	void   RenderClear ();
 
 private:
 	SdlFontManager();
@@ -33,10 +32,10 @@ private:
 	TTF_Font*     mFont;
 	SDL_Surface*  mFontSurface;
 	SDL_Texture*  mFontTexture;
+	SDL_Renderer* mRenderer;
 	float         mRed;
 	float         mGreen;
 	float         mBlue;
-	SDL_Renderer* mRenderer;
 };
 
 #endif

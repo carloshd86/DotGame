@@ -10,8 +10,9 @@
 #include <SDL_image.h>
 #include <SDL_video.h>
 
-#define mSdlWindow  static_cast<SDL_Window *>(mWindow.pWindow)
-#define mSdlContext static_cast<SDL_GLContext *>(mContext.pContext)
+#define mSdlWindow   static_cast<SDL_Window *>   (mWindow.pWindow)
+#define mSdlContext  static_cast<SDL_GLContext *>(mContext.pContext)
+#define mSdlRenderer static_cast<SDL_Renderer *> (mRenderer.pRenderer)
 
 
 SdlWindowManager * SdlWindowManager::mInstance = nullptr;
@@ -89,6 +90,8 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 		/* Create our opengl context and attach it to our window */
 		mContext.pContext = SDL_GL_CreateContext(mSdlWindow);
 
+		mRenderer.pRenderer = SDL_CreateRenderer(mSdlWindow, -1, 0);
+
 		/* This makes our buffer swap syncronized with the monitor's vertical refresh */
 		SDL_GL_SetSwapInterval(1);
 
@@ -111,6 +114,7 @@ IWindowManager::GE_Err SdlWindowManager::End()
 		mTextures.clear();
 
 		/* Delete our opengl context, destroy our window, and shutdown SDL */
+		SDL_DestroyRenderer(mSdlRenderer);
 		SDL_GL_DeleteContext(mSdlContext);
 		SDL_DestroyWindow(mSdlWindow);
 		SDL_Quit();
@@ -129,8 +133,8 @@ IWindowManager::GE_Err SdlWindowManager::End()
 
 void SdlWindowManager::Render()
 {
-	glColor3f(mBackgroundR, mBackgroundG, mBackgroundB);
-	glClear( GL_COLOR_BUFFER_BIT );
+	SDL_SetRenderDrawColor(mSdlRenderer, mBackgroundR * 255, mBackgroundG * 255, mBackgroundB * 255, 255);
+	SDL_RenderClear(mSdlRenderer);
 
 	// Render background
 	if (!mBackgroundImage.empty())
@@ -161,8 +165,8 @@ void SdlWindowManager::SwapBuffers() {
 // *************************************************
 
 void SdlWindowManager::ClearColorBuffer(float r, float g, float b) {
-	glClearColor(r, g, b, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_SetRenderDrawColor(mSdlRenderer, r * 255, g * 255, b * 255, 255);
+	SDL_RenderClear(mSdlRenderer);
 }
 
 // *************************************************
@@ -267,7 +271,22 @@ void SdlWindowManager::PumpEvents() {
 
 // *************************************************
 
-IWindowManager::Window SdlWindowManager::GetWindow() const
+IWindowManager::Renderer SdlWindowManager::GetRenderer() const
 {
-	return mWindow;
+	return mRenderer;
+}
+
+// *************************************************
+
+void SdlWindowManager::SetColor(float r, float g, float b, float a)
+{
+	SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(r * 255), static_cast<uint8_t>(g * 255), static_cast<uint8_t>(b * 255), static_cast<uint8_t>(a * 255));
+}
+
+// *************************************************
+
+void SdlWindowManager::DrawLine(float x1, float y1, float x2, float y2)
+{
+	SDL_RenderDrawLine(mSdlRenderer, static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2));
+	SDL_RenderPresent(mSdlRenderer);
 }

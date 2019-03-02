@@ -82,9 +82,9 @@ void ApplicationModeIntro::Run(float deltaTime)
 {
 	mTimeElapsed += deltaTime;
 	if (mTimeElapsed >= TIME_TO_START_GAME) StartLevel(Game::GameLevel::Level1);
-	else if (static_cast<int>(TIME_TO_START_GAME - mTimeElapsed) < mRestingTime)
+	else if (static_cast<int>(TIME_TO_START_GAME - mTimeElapsed) < mRestingTime - 1)
 	{
-		mRestingTime = static_cast<int>(TIME_TO_START_GAME - mTimeElapsed);
+		mRestingTime = static_cast<int>(TIME_TO_START_GAME - mTimeElapsed) + 1;
 	}
 }
 
@@ -92,8 +92,6 @@ void ApplicationModeIntro::Run(float deltaTime)
 
 void ApplicationModeIntro::Render()
 {
-	g_pFontManager->RenderClear();
-
 	g_pWindowManager->Render();
 	g_pFontManager->DrawText(Vec2(100, 100), m_pProperties->GetProperty("intro.title.text").c_str());
 	g_pFontManager->DrawText(Vec2(100, 200), m_pProperties->GetProperty("intro.click_start.text").c_str());

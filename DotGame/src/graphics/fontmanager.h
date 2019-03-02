@@ -18,7 +18,6 @@ public:
 	virtual void   SetColor    (float r, float g, float b)              =0;
 	virtual void   DrawText    (Vec2 pos, Vec2 size, const char * text) =0;
 	virtual void   DrawText    (Vec2 pos, const char * text)            =0;
-	virtual void   RenderClear ()                                    =0;
 };
 
 #endif

@@ -29,7 +29,9 @@ public:
 	Vec2      GetWorldSize       ();
 	bool      WindowShouldClose  ();
 	void      PumpEvents         ();
-	Window    GetWindow          () const;
+	Renderer  GetRenderer        () const;
+	void      SetColor           (float r, float g, float b, float a);
+	void      DrawLine           (float x, float y, float x2, float y2);
 	
 private:
 	SdlWindowManager();
@@ -41,6 +43,7 @@ private:
 
 	Window                                                 mWindow;
 	Context                                                mContext;
+	Renderer                                               mRenderer;
 	SDL_Surface*                                           mWindowSurface;
 	bool                                                   mInitialized;
 	bool                                                   mEnded;

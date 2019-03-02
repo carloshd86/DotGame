@@ -8,16 +8,16 @@ SdlFontManager * SdlFontManager::mInstance = nullptr;
 // *************************************************
 
 SdlFontManager::SdlFontManager() :
-	mInitialized   (false),
-	mEnded         (false),
-	mFont          (nullptr),
-	mFontSurface   (nullptr),
-	mFontTexture   (nullptr),
-	mRenderer      (nullptr),
-	mFontSize      (-1),
-	mRed           (1.f),
-	mGreen         (1.f),
-	mBlue          (1.f) {}
+	mInitialized (false),
+	mEnded       (false),
+	mFont        (nullptr),
+	mFontSurface (nullptr),
+	mFontTexture (nullptr),
+	mFontSize    (-1),
+	mRed         (1.f),
+	mGreen       (1.f),
+	mBlue        (1.f),
+    mRenderer    (nullptr) {}
 
 // *************************************************
 
@@ -49,8 +49,7 @@ IFontManager::FM_Err SdlFontManager::Init()
 			return KO;
 		}
 
-		SDL_Window* sdlWindow = static_cast<SDL_Window*>(g_pWindowManager->GetWindow().pWindow);
-		mRenderer             = SDL_CreateRenderer(sdlWindow, -1, 0);
+		mRenderer = static_cast<SDL_Renderer*>(g_pWindowManager->GetRenderer().pRenderer);
 
 	}
 	return OK;
@@ -76,11 +75,6 @@ IFontManager::FM_Err SdlFontManager::End()
 		{ 
 			TTF_CloseFont(mFont);
 			mFont = nullptr;
-		}
-		if (mRenderer)
-		{
-			SDL_DestroyRenderer(mRenderer);
-			mRenderer = nullptr;
 		}
 		TTF_Quit();
 	}
@@ -168,15 +162,5 @@ void SdlFontManager::DrawText(Vec2 pos, Vec2 size, const char * text)
 			SDL_FreeSurface(mFontSurface);
 			mFontSurface = nullptr;
 		}
-	}
-}
-
-// *************************************************
-
-void SdlFontManager::RenderClear()
-{
-	if (mRenderer)
-	{
-		SDL_RenderClear(mRenderer);
 	}
 }
