@@ -27,6 +27,7 @@
     <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\main.cpp" />
+    <ClCompile Include="..\src\graphics\sdlfontmanager.cpp" />
     <ClCompile Include="..\src\graphics\sdlsprite.cpp" />
     <ClCompile Include="..\src\properties\properties.cpp" />
     <ClCompile Include="..\src\windowManager\sdlwindowmanager.cpp" />
@@ -47,6 +48,8 @@
     <ClInclude Include="..\src\globals\asserts.h" />
     <ClInclude Include="..\src\globals\globals.h" />
     <ClInclude Include="..\src\globals\memorycontrol.h" />
+    <ClInclude Include="..\src\graphics\fontmanager.h" />
+    <ClInclude Include="..\src\graphics\sdlfontmanager.h" />
     <ClInclude Include="..\src\graphics\sdlsprite.h" />
     <ClInclude Include="..\src\graphics\sprite.h" />
     <ClInclude Include="..\src\messages\messagereceiver.h" />
@@ -114,12 +117,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>${ProjectDir}../../../lib/glew;${ProjectDir}../../../lib/sdl_2.0.9/include;${ProjectDir}../../../src/core;${ProjectDir}../../../src/globals;${ProjectDir}../../../src/game;${ProjectDir}../../../src/windowManager;${ProjectDir}../../../src/eventManager;${ProjectDir}../../../src/applicationManager;${ProjectDir}../../../src/applicationModes;${ProjectDir}../../../src/soundManager;${ProjectDir}../../../src/properties;${ProjectDir}../../../src/entities;${ProjectDir}../../../src/components;${ProjectDir}../../../src/messages;${ProjectDir}../../../src/graphics;${ProjectDir}../../../lib/sdl_image_2.0.4/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>${ProjectDir}../../../lib/glew;${ProjectDir}../../../lib/sdl_2.0.9/include;${ProjectDir}../../../src/core;${ProjectDir}../../../src/globals;${ProjectDir}../../../src/game;${ProjectDir}../../../src/windowManager;${ProjectDir}../../../src/eventManager;${ProjectDir}../../../src/applicationManager;${ProjectDir}../../../src/applicationModes;${ProjectDir}../../../src/soundManager;${ProjectDir}../../../src/properties;${ProjectDir}../../../src/entities;${ProjectDir}../../../src/components;${ProjectDir}../../../src/messages;${ProjectDir}../../../src/graphics;${ProjectDir}../../../lib/sdl_image_2.0.4/include;${ProjectDir}../../../lib/sdl_ttf_2.0.15/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>${ProjectDir}../../../lib/sdl_2.0.9/x86;${ProjectDir}../../../lib/sdl_image_2.0.4/x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>${ProjectDir}../../../lib/sdl_2.0.9/x86;${ProjectDir}../../../lib/sdl_image_2.0.4/x86;${ProjectDir}../../../lib/sdl_ttf_2.0.15/x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

@@ -12,7 +12,6 @@ public:
 
 	enum P_Language
 	{
-		Spanish,
 		English
 	};
 

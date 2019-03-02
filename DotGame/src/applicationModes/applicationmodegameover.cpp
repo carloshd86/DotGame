@@ -7,9 +7,14 @@
 //#include "font.h"
 #include "asserts.h"
 
+const float ApplicationModeGameOver::TIME_TO_START_GAME = 5.f;
+
+// *************************************************
 
 ApplicationModeGameOver::ApplicationModeGameOver () :
-	mMusicId          (0) {}
+	mMusicId     (0),
+	m_pSprite    (nullptr),
+	mTimeElapsed (0.f) {}
 
 // *************************************************
 
@@ -38,10 +43,13 @@ void ApplicationModeGameOver::Activate()
 	g_pEventManager->Register(this, IEventManager::EM_Event::Quit);
 
 	g_pWindowManager->Init();
-	m_pSprite = g_pWindowManager->RequireSprite(Vec2(SCR_HEIGHT/4.f, 350.f), Vec2(400.f, 56.f), (DATA_FOLDER + "gameover.png").c_str(), false);
 
-	mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "DefenseLine.wav").c_str());
-	if (mMusicId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);
+	mTimeElapsed = 0.f;
+
+	/*m_pSprite = g_pWindowManager->RequireSprite(Vec2(SCR_HEIGHT/4.f, 350.f), Vec2(400.f, 56.f), (DATA_FOLDER + "gameover.png").c_str(), false);*/
+
+	/*mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "DefenseLine.wav").c_str());
+	if (mMusicId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);*/
 }
 
 // *************************************************
@@ -54,7 +62,7 @@ void ApplicationModeGameOver::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	g_pSoundManager->UnloadWav(mMusicId);
+	//g_pSoundManager->UnloadWav(mMusicId);
 	g_pWindowManager->End();
 }
 
@@ -70,6 +78,11 @@ void ApplicationModeGameOver::ProcessInput()
 
 void ApplicationModeGameOver::Run(float deltaTime)
 {
+	mTimeElapsed += deltaTime;
+	if (mTimeElapsed >= TIME_TO_START_GAME) 
+	{
+		StartLevel(Game::GameLevel::Level1);
+	}
 }
 
 // *************************************************

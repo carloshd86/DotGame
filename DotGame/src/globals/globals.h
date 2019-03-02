@@ -5,6 +5,7 @@
 #include "windowmanager.h"
 #include "soundmanager.h"
 #include "eventmanager.h"
+#include "fontmanager.h"
 #include "properties.h"
 #include "game.h"
 
@@ -17,6 +18,7 @@ extern Game::GameLevel      g_gameLevel;
 extern IWindowManager     * g_pWindowManager;
 extern ISoundManager      * g_pSoundManager;
 extern IEventManager      * g_pEventManager;
+extern IFontManager       * g_pFontManager;
 
 extern bool  gQuit;
 extern float gMouseX;
@@ -25,8 +27,14 @@ extern float gMouseY;
 const int SCR_WIDTH  = 1280;
 const int SCR_HEIGHT = 720;
 
-	
-const std::string DATA_FOLDER = "../data/";
+const int FRAME_WIDTH  = 64;
+const int FRAME_HEIGHT = 64;
+const int NUM_COLS     = 10;
+const int NUM_ROWS     = 10;
+const int GRID_POS_X   = 100;
+const int GRID_POS_Y   = 50;
+
+const std::string DATA_FOLDER = "data/";
 
 constexpr const char * LEVEL_JSON_KEY           = "level";
 constexpr const char * GOAL_JSON_KEY            = "goal";
@@ -50,6 +58,6 @@ constexpr const char * IMG_RIGHT_JSON_KEY       = "imgRight";
 constexpr const char * IMG_ALERT_LEFT_JSON_KEY  = "imgAlertLeft";
 constexpr const char * IMG_ALERT_RIGHT_JSON_KEY = "imgAlertRight";
 
-const Properties::P_Language DEFAULT_LANG = Properties::P_Language::Spanish;
+const Properties::P_Language DEFAULT_LANG = Properties::P_Language::English;
 
 #endif

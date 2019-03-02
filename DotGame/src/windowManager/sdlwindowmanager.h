@@ -29,6 +29,7 @@ public:
 	Vec2      GetWorldSize       ();
 	bool      WindowShouldClose  ();
 	void      PumpEvents         ();
+	Window    GetWindow          () const;
 	
 private:
 	SdlWindowManager();

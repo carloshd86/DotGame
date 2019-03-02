@@ -19,9 +19,12 @@ public:
 	bool ProcessEvent(const Event& event);
 
 private:
+	static const float TIME_TO_START_GAME;
+
 	Properties  *m_pProperties;
 	unsigned int mMusicId;
 	ISprite     *m_pSprite;
+	float        mTimeElapsed; 
 
 	void StartLevel (Game::GameLevel level);
 	void QuitGame   ();

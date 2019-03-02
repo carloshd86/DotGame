@@ -1,9 +1,7 @@
 #ifndef __WINDOW_MANAGER_H__
 #define __WINDOW_MANAGER_H__
 
-
 #include "sprite.h"
-
 
 class IWindowManager
 {
@@ -37,6 +35,7 @@ public:
 	virtual Vec2      GetWorldSize       ()                                                                                                               = 0;
 	virtual bool      WindowShouldClose  ()                                                                                                               = 0;
 	virtual void      PumpEvents         ()                                                                                                               = 0;
+	virtual Window    GetWindow          () const                                                                                                         = 0;
 };
 
 #endif

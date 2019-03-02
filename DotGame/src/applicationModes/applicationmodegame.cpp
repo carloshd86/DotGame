@@ -49,7 +49,7 @@ void ApplicationModeGame::Activate()
 	g_pGame->Init();
 	g_pWindowManager->Init();
 
-	mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "ArcadeFunk.wav").c_str());
+	//mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "ArcadeFunk.wav").c_str());
 }
 
 // *************************************************
@@ -62,7 +62,7 @@ void ApplicationModeGame::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	g_pSoundManager->UnloadWav(mMusicId);
+	//g_pSoundManager->UnloadWav(mMusicId);
 	g_pWindowManager->End();
 	g_pGame->End();
 }

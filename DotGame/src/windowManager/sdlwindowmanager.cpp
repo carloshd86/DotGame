@@ -264,3 +264,10 @@ bool SdlWindowManager::WindowShouldClose()
 void SdlWindowManager::PumpEvents() {
 	SDL_PumpEvents();
 }
+
+// *************************************************
+
+IWindowManager::Window SdlWindowManager::GetWindow() const
+{
+	return mWindow;
+}

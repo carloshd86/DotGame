@@ -5,26 +5,19 @@
 #include <fstream>
 #include <algorithm>
 
-
 Properties *  Properties::mInstance = nullptr;
 
-// *************************************************
-//
 // *************************************************
 
 Properties::Properties(const P_Language lang) :
 	mLang (lang) {}
 
 // *************************************************
-//
-// *************************************************
 
 Properties::~Properties()
 {
 }
 
-// *************************************************
-//
 // *************************************************
 
 Properties * Properties::Instance(const char * file, const P_Language lang)
@@ -67,8 +60,6 @@ Properties * Properties::Instance(const char * file, const P_Language lang)
 }
 
 // *************************************************
-//
-// *************************************************
 
 void Properties::RemoveInstance()
 {
@@ -76,8 +67,6 @@ void Properties::RemoveInstance()
  mInstance = nullptr;
 }
 
-// *************************************************
-//
 // *************************************************
 
 const std::string& Properties::GetProperty(const std::string& key) 
@@ -87,14 +76,11 @@ const std::string& Properties::GetProperty(const std::string& key)
 }
 
 // *************************************************
-//
-// *************************************************
 
 const char * Properties::GetLanguageSuffix(const P_Language lang)
 {
 	switch (lang)
 	{
-		case Spanish: return "es";
 		case English: return "en";
 	}
 

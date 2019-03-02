@@ -19,9 +19,6 @@
     <Filter Include="core">
       <UniqueIdentifier>{932cf74a-071b-4169-aa19-a1255ee03916}</UniqueIdentifier>
     </Filter>
-    <Filter Include="soundManager">
-      <UniqueIdentifier>{3a80b35c-c81b-4ff9-abea-29693576fbc6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="properties">
       <UniqueIdentifier>{e5d28a38-b709-4b8f-9313-7cb5681ca38a}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{0026df2e-bdee-4a96-b63e-72e4a3705d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soundManager">
+      <UniqueIdentifier>{3a80b35c-c81b-4ff9-abea-29693576fbc6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="..\src\applicationModes\applicationmodeintro.cpp">
       <Filter>applicationModes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\graphics\sdlfontmanager.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +148,12 @@
     </ClInclude>
     <ClInclude Include="..\src\applicationModes\applicationmodeintro.h">
       <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\fontmanager.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\sdlfontmanager.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

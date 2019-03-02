@@ -35,7 +35,8 @@ void Game::Init()
 	if (!mInitialized)
 	{
 		// Init game state
-		
+		g_pWindowManager->SetBackgroundColor(1.f, 1.f, 1.f);
+
 		mInitialized = true;
 	}
 }
