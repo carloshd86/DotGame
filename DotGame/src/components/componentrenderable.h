@@ -30,7 +30,7 @@ private:
 
 	Vec2               mSize;
 	std::string        mImage;
-	ISprite           *m_pSprite;
+	ISprite*           m_pSprite;
 	bool               mInitialized;
 	MessageCallbackMap mMessageCallbacks;
 

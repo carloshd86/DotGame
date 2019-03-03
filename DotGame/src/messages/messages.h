@@ -217,16 +217,16 @@ public:
 	RequireSpriteMessage() : 
 		GameMessage (GM_Type::RequireSprite),
 		mProcessed  (false),
-		mSprite     (nullptr) {}
+		m_pSprite   (nullptr) {}
 
 	bool     GetProcessed()          const { return mProcessed; }
 	void     SetProcessed(bool processed)  { mProcessed = processed; }
-	ISprite* GetSprite   ()          const { return mSprite; }
-	void     SetSprite   (ISprite* sprite) { mSprite = sprite; }
+	ISprite* GetSprite   ()          const { return m_pSprite; }
+	void     SetSprite   (ISprite* sprite) { m_pSprite = sprite; }
 
 private:
 	bool     mProcessed;
-	ISprite* mSprite;
+	ISprite* m_pSprite;
 };
 
 #endif

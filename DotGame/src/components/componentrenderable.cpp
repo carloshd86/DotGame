@@ -45,6 +45,7 @@ void CRenderable::End()
 		GAME_ASSERT(g_pWindowManager);
 		g_pWindowManager->ReleaseSprite(m_pSprite);
 
+		m_pSprite = nullptr;
 		mMessageCallbacks.clear();
 
 		mInitialized = false;
@@ -168,7 +169,8 @@ void CRenderable::OnRequireVisible(GameMessage& message)
 	RequireRenderVisibilityMessage * rrvm = dynamic_cast<RequireRenderVisibilityMessage *>(&message);
 	if (rrvm)
 	{
-		rrvm->SetVisible(m_pSprite->GetVisible());
+		if (m_pSprite) rrvm->SetVisible(m_pSprite->GetVisible());
+		else           rrvm->SetVisible(false);
 		rrvm->SetProcessed(true);
 	}
 }

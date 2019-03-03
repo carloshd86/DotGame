@@ -196,9 +196,12 @@ void Game::DeleteEntities()
 				RequireSpriteMessage rsm;
 				(*it)->ReceiveMessage(rsm);
 				GAME_ASSERT(rsm.GetProcessed());
+
+				GAME_DELETE(*it);
+				it = mEntities.erase(it);
+
 				g_pWindowManager->ReleaseSprite(rsm.GetSprite());
 
-				it = mEntities.erase(it);
 				numEntitiesToDelete--;
 			}
 			else
