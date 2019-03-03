@@ -24,7 +24,6 @@ private:
 	std::map<int, ISprite*> mTilesMap;
 	int32_t                 mLastTileIndexHover;
 
-	int GetTileIndexFromScreenPosition(Vec2 pos);
 	void CheckTileMouseHover(Vec2 pos);
 	void QuitGame();
 };

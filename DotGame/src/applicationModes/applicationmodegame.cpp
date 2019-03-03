@@ -161,7 +161,7 @@ void ApplicationModeGame::QuitGame()
 
 void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
 {
-	int tileIndex = GetTileIndexFromScreenPosition(pos);
+	int tileIndex = g_pGame->GetTileIndexFromScreenPosition(pos);
 
 	if (mLastTileIndexHover != tileIndex)
 	{
@@ -185,31 +185,4 @@ void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
 			mLastTileIndexHover = tileIndex;
 		}
 	}
-}
-
-// *************************************************
-
-int ApplicationModeGame::GetTileIndexFromScreenPosition(Vec2 pos)
-{
-	int tileIndex = -1;
-
-	if (pos.x >= GRID_POS_X && pos.x <= GRID_POS_X + FRAME_WIDTH * NUM_COLS
-		&& pos.y >= GRID_POS_Y && pos.y <= GRID_POS_Y + FRAME_HEIGHT * NUM_ROWS)
-	{
-		for (int j = 0; j < NUM_ROWS; j++) {
-			if (pos.y > GRID_POS_Y + FRAME_HEIGHT * j && pos.y < GRID_POS_Y + FRAME_HEIGHT * (j + 1))
-			{
-				for (int i = 0; i < NUM_COLS; i++) {
-					if (pos.x > GRID_POS_X + FRAME_WIDTH * i && pos.x < GRID_POS_X + FRAME_WIDTH * (i + 1))
-					{
-						tileIndex = NUM_COLS * j + i;
-						break;
-					}
-				}
-				break;
-			}
-		}
-	}
-
-	return tileIndex;
 }
