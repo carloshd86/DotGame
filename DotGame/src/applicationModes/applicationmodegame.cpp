@@ -3,9 +3,7 @@
 #include "applicationmanager.h"
 #include "game.h"
 #include "windowmanager.h"
-//#include "sys.h"
 #include "core.h"
-//#include "font.h"
 #include "events.h"
 #include "asserts.h"
 #include "memorycontrol.h"
@@ -50,6 +48,7 @@ void ApplicationModeGame::Activate()
 
 	gFinalScore = 0;
 	g_pGame->Init();
+	g_pGame->Register(this);
 	g_pWindowManager->InitWindow();
 
 	std::string tileBackground = DATA_FOLDER + "TileBackground.png";
@@ -71,9 +70,8 @@ void ApplicationModeGame::Deactivate()
 {
 	GAME_ASSERT(g_pEventManager);
 
-	gFinalScore = g_pGame->GetFinalScore();
-
 	mTilesMap.clear();
+	mScoreSprites.clear();
 
 	Properties::RemoveInstance();
 	m_pProperties = nullptr;
@@ -81,6 +79,7 @@ void ApplicationModeGame::Deactivate()
 	g_pEventManager->Unregister(this);
 	//g_pSoundManager->UnloadWav(mMusicId);
 	g_pWindowManager->EndWindow();
+	g_pGame->Unregister(this);
 	g_pGame->End();
 }
 
@@ -183,4 +182,20 @@ void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
 			mLastTileIndexHover = tileIndex;
 		}
 	}
+}
+
+// *************************************************
+
+bool ApplicationModeGame::ScoreAdd(Game::DotType dotType)
+{
+	Vec2 scoreEntryPos(SCORE_POS_X + FRAME_WIDTH * mScoreSprites.size(), SCORE_POS_Y);
+
+	std::string image;
+	if (Game::DotType::Green == dotType) image = DATA_FOLDER + "ClickableGreen.png";
+	else                                 image = DATA_FOLDER + "ClickableRed.png";
+
+	ISprite* newSprite = g_pWindowManager->RequireSprite(scoreEntryPos, Vec2(FRAME_WIDTH, FRAME_HEIGHT), image.c_str());
+	mScoreSprites.push_back(newSprite);
+
+	return true;
 }

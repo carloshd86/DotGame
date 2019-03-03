@@ -27,6 +27,12 @@ public:
 		Red
 	};
 
+	class IScoreListener 
+	{
+	public:
+		virtual bool ScoreAdd (DotType dotType) = 0;
+	};
+
 	Game();
 	~Game();
 
@@ -42,7 +48,9 @@ public:
 
 	void   IncreaseScore (Entity* entityHit);
 	void   SetGameOver   (GameResult result);
-	size_t GetFinalScore() const;
+
+	bool Register   (IScoreListener* listener);
+	bool Unregister (IScoreListener* listener);
 	
 private:
 	static const int    MAX_DOTS;
@@ -55,8 +63,9 @@ private:
 	GameLevel            mGameLevel;
 	float                mTimeSinceLastEntity;
 	std::set<int>        mTilesOccupied;
-	std::vector<DotType> mScore;
 	std::set<Entity*>    mEntitiesToDelete;
+
+	std::vector<IScoreListener*> mScoreListeners;
 
 	void SpawnDot();
 	void DeleteEntities();

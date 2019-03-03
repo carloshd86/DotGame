@@ -35,6 +35,8 @@ const int   NUM_COLS     = 10;
 const int   NUM_ROWS     = 10;
 const int   GRID_POS_X   = 320;
 const int   GRID_POS_Y   = 70;
+const int   SCORE_POS_X  = 320;
+const int   SCORE_POS_Y  = 4;
 
 const std::string DATA_FOLDER = "data/";
 

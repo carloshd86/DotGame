@@ -217,14 +217,19 @@ void Game::DeleteEntities()
 
 void Game::IncreaseScore(Entity* entityHit)
 {
+	gFinalScore++;
 	RequireDotTypeMessage rdtm;
 	entityHit->ReceiveMessage(rdtm);
 	GAME_ASSERT(rdtm.GetProcessed());
-	mScore.push_back(rdtm.GetDotType());
+
+	for (auto it = mScoreListeners.begin(); it != mScoreListeners.end(); ++it)
+	{
+		(*it)->ScoreAdd(rdtm.GetDotType());
+	}
 
 	mEntitiesToDelete.insert(entityHit);
 
-	if (mScore.size() >= SCORE_WIN) SetGameOver(GameResult::Success);
+	if (gFinalScore >= SCORE_WIN) SetGameOver(GameResult::Success);
 }
 
 // *************************************************
@@ -239,7 +244,23 @@ void Game::SetGameOver(GameResult result)
 
 // *************************************************
 
-size_t Game::GetFinalScore() const
+bool Game::Register(IScoreListener* listener)
 {
-	return mScore.size();
+	mScoreListeners.push_back(listener);
+	return true;
+}
+
+// *************************************************
+
+bool Game::Unregister(IScoreListener* listener)
+{
+	for (auto it = mScoreListeners.begin(); it != mScoreListeners.end(); ++it)
+	{
+		if (*it == listener)
+		{
+			it = mScoreListeners.erase(it);
+			break;
+		}
+	}
+	return true;
 }
