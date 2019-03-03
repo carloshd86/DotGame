@@ -13,14 +13,12 @@ const float ApplicationModeGameOver::TIME_TO_START_GAME = 5.f;
 
 ApplicationModeGameOver::ApplicationModeGameOver () :
 	mMusicId     (0),
-	m_pSprite    (nullptr),
 	mTimeElapsed (0.f) {}
 
 // *************************************************
 
 ApplicationModeGameOver::~ApplicationModeGameOver()
 {
-	if (m_pSprite) g_pWindowManager->ReleaseSprite(m_pSprite);
 }
 
 // *************************************************

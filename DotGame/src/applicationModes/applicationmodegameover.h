@@ -23,7 +23,6 @@ private:
 
 	Properties  *m_pProperties;
 	unsigned int mMusicId;
-	ISprite     *m_pSprite;
 	float        mTimeElapsed; 
 
 	void StartLevel (Game::GameLevel level);

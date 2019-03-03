@@ -13,7 +13,6 @@ const float ApplicationModeIntro::TIME_TO_START_GAME = 5.f;
 
 ApplicationModeIntro::ApplicationModeIntro() :
 	mMusicId     (0),
-	m_pSprite    (nullptr),
     mTimeElapsed (0.f),
 	mRestingTime (static_cast<int>(TIME_TO_START_GAME)) {}
 
@@ -21,7 +20,6 @@ ApplicationModeIntro::ApplicationModeIntro() :
 
 ApplicationModeIntro::~ApplicationModeIntro()
 {
-	if (m_pSprite) g_pWindowManager->ReleaseSprite(m_pSprite);
 }
 
 // *************************************************
@@ -98,13 +96,6 @@ void ApplicationModeIntro::Render()
 	std::string timeMessage = m_pProperties->GetProperty("intro.time_start.text");
 	timeMessage.append(std::to_string(mRestingTime));
 	g_pFontManager->DrawText(Vec2(100, 300), timeMessage.c_str());
-	//glClearColor(0.3f, 0.3f, 0.3f, 1.f);
-	//glClear( GL_COLOR_BUFFER_BIT );
-
-	//glColor3f(1.f, 1.f, 1.f);
-	//if (m_pSprite) g_pGraphicsEngine->RenderSprite(m_pSprite);
-	//mCurrentContainer->Render();
-
 }
 
 // *************************************************

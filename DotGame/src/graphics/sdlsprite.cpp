@@ -2,7 +2,7 @@
 #include "sdlsprite.h"
 #include <SDL_image.h>
 
-SdlSprite::SdlSprite(Vec2 pos, Vec2 size, SDL_Surface* tex, float red, float green, float blue) :
+SdlSprite::SdlSprite(Vec2 pos, Vec2 size, SDL_Texture* tex, float red, float green, float blue) :
 	mPos(pos),
 	mSize(size),
 	mTex (tex),

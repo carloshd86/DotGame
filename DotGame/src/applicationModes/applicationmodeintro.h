@@ -24,7 +24,6 @@ private:
 
 	Properties *m_pProperties;
 	uint32_t    mMusicId;
-	ISprite    *m_pSprite;
 	float       mTimeElapsed;
 	int         mRestingTime;
 

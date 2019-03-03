@@ -12,7 +12,9 @@
 
 
 ApplicationModeGame::ApplicationModeGame () :
-	mMusicId(0) {}
+	mMusicId(0),
+	m_pProperties(nullptr),
+	mLastTileIndexHover(-1) {}
 
 // *************************************************
 
@@ -49,6 +51,13 @@ void ApplicationModeGame::Activate()
 	g_pGame->Init();
 	g_pWindowManager->Init();
 
+	std::string tileBackground = DATA_FOLDER + "TileBackground.png";
+	for (int j = 0; j < NUM_ROWS; j++) {
+		for (int i = 0; i < NUM_COLS; i++) {
+			mTilesMap[NUM_COLS * j + i] = g_pWindowManager->RequireSprite(Vec2(GRID_POS_X + FRAME_WIDTH * i, GRID_POS_Y + FRAME_HEIGHT * j), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str());
+		}
+	}
+
 	//mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "ArcadeFunk.wav").c_str());
 }
 
@@ -57,6 +66,8 @@ void ApplicationModeGame::Activate()
 void ApplicationModeGame::Deactivate()
 {
 	GAME_ASSERT(g_pEventManager);
+
+	mTilesMap.clear();
 
 	Properties::RemoveInstance();
 	m_pProperties = nullptr;
@@ -86,6 +97,7 @@ void ApplicationModeGame::Run(float deltaTime)
 
 void ApplicationModeGame::Render()
 {
+	g_pWindowManager->SetColor(1.f, 1.f, 1.f, 1.f);
 	g_pWindowManager->Render();
 
 	g_pWindowManager->SetColor(0.f, 0.f, 0.f, 1.f);
@@ -97,7 +109,7 @@ void ApplicationModeGame::Render()
 	}
 	for (int i = 0; i <= NUM_COLS; i++)
 	{
-		float newX = GRID_POS_X  + FRAME_WIDTH * i;
+		float newX = GRID_POS_X + FRAME_WIDTH * i;
 		g_pWindowManager->DrawLine(newX, GRID_POS_Y, newX, GRID_POS_Y + FRAME_HEIGHT * NUM_ROWS);
 	}
 }
@@ -113,6 +125,7 @@ bool ApplicationModeGame::ProcessEvent(const Event& event)
 		const EventMouseMove* eMouseMove = dynamic_cast<const EventMouseMove*>(&event);
 		gMouseX = eMouseMove->GetPosX();
 		gMouseY = eMouseMove->GetPosY();
+		CheckTileMouseHover(Vec2(gMouseX, gMouseY));
 		break;
 	}
 	case IEventManager::EM_Event::MouseClick: 
@@ -137,7 +150,66 @@ bool ApplicationModeGame::ProcessEvent(const Event& event)
 	return true;
 }
 
+// *************************************************
+
 void ApplicationModeGame::QuitGame()
 {
 	gQuit = true;
+}
+
+// *************************************************
+
+void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
+{
+	int tileIndex = GetTileIndexFromScreenPosition(pos);
+
+	if (mLastTileIndexHover != tileIndex)
+	{
+		if (mLastTileIndexHover >= 0)
+		{
+			g_pWindowManager->ReleaseSprite(mTilesMap[mLastTileIndexHover]);
+			std::string tileBackground = DATA_FOLDER + "TileBackground.png";
+			int i = mLastTileIndexHover % NUM_COLS;
+			int j = mLastTileIndexHover / NUM_COLS;
+			mTilesMap[mLastTileIndexHover] = g_pWindowManager->RequireSprite(Vec2(GRID_POS_X + FRAME_WIDTH * i, GRID_POS_Y + FRAME_HEIGHT * j), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str());
+			mLastTileIndexHover = -1;
+		}
+
+		if (tileIndex >= 0)
+		{
+			g_pWindowManager->ReleaseSprite(mTilesMap[tileIndex]);
+			std::string tileBackground = DATA_FOLDER + "TileMouseOver.png";
+			int i = tileIndex % NUM_COLS;
+			int j = tileIndex / NUM_COLS;
+			mTilesMap[tileIndex] = g_pWindowManager->RequireSprite(Vec2(GRID_POS_X + FRAME_WIDTH * i, GRID_POS_Y + FRAME_HEIGHT * j), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str());
+			mLastTileIndexHover = tileIndex;
+		}
+	}
+}
+
+// *************************************************
+
+int ApplicationModeGame::GetTileIndexFromScreenPosition(Vec2 pos)
+{
+	int tileIndex = -1;
+
+	if (pos.x >= GRID_POS_X && pos.x <= GRID_POS_X + FRAME_WIDTH * NUM_COLS
+		&& pos.y >= GRID_POS_Y && pos.y <= GRID_POS_Y + FRAME_HEIGHT * NUM_ROWS)
+	{
+		for (int j = 0; j < NUM_ROWS; j++) {
+			if (pos.y > GRID_POS_Y + FRAME_HEIGHT * j && pos.y < GRID_POS_Y + FRAME_HEIGHT * (j + 1))
+			{
+				for (int i = 0; i < NUM_COLS; i++) {
+					if (pos.x > GRID_POS_X + FRAME_WIDTH * i && pos.x < GRID_POS_X + FRAME_WIDTH * (i + 1))
+					{
+						tileIndex = NUM_COLS * j + i;
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	return tileIndex;
 }

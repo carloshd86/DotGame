@@ -8,6 +8,7 @@
 
 class SdlSprite;
 struct SDL_Surface;
+struct SDL_Texture;
 
 class SdlWindowManager : public IWindowManager
 {
@@ -48,14 +49,15 @@ private:
 	bool                                                   mInitialized;
 	bool                                                   mEnded;
 	std::string                                            mBackgroundImage;
-	SDL_Surface*                                           mBackground;
+	SDL_Texture*                                           mBackground;
 	float                                                  mBackgroundR;
 	float                                                  mBackgroundG;
 	float                                                  mBackgroundB;
 	std::vector<std::pair<ISprite *, bool>>                mSprites;
-	std::vector<std::pair<std::string, SDL_Surface*>>      mTextures;
+	std::vector<std::pair<std::string, SDL_Texture*>>      mTextures;
 
-	void RenderTexture(Vec2 pos, Vec2 size, SDL_Surface* tex);
+	void LoadBackgroundImage();
+	void RenderTexture(Vec2 pos, Vec2 size, SDL_Texture* surface);
 };
 
 #endif

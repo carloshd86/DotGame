@@ -19,9 +19,13 @@ public:
 	bool ProcessEvent(const Event& event);
 
 private:
-	Properties                                *m_pProperties;
-	unsigned int                               mMusicId;
+	Properties             *m_pProperties;
+	uint32_t                mMusicId;
+	std::map<int, ISprite*> mTilesMap;
+	int32_t                 mLastTileIndexHover;
 
+	int GetTileIndexFromScreenPosition(Vec2 pos);
+	void CheckTileMouseHover(Vec2 pos);
 	void QuitGame();
 };
 

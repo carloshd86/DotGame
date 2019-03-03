@@ -56,7 +56,7 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 {
 	if (!mInitialized)
 	{
-		if (!mBackgroundImage.empty()) mBackground = IMG_Load(mBackgroundImage.c_str());
+		if (!mBackgroundImage.empty()) LoadBackgroundImage();
 
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			std::cout << "could not initialize SDL" << std::endl;
@@ -92,6 +92,12 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 
 		mRenderer.pRenderer = SDL_CreateRenderer(mSdlWindow, -1, 0);
 
+		int imgFlags = IMG_INIT_PNG;
+		if( !( IMG_Init( imgFlags ) & imgFlags ) )
+		{
+			printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+		}
+
 		/* This makes our buffer swap syncronized with the monitor's vertical refresh */
 		SDL_GL_SetSwapInterval(1);
 
@@ -110,10 +116,11 @@ IWindowManager::GE_Err SdlWindowManager::End()
 		for(auto sprite : mSprites) GAME_DELETE(sprite.first);
 		mSprites.clear();
 
-		for (auto& texture : mTextures) SDL_FreeSurface(texture.second);
+		for (auto& texture : mTextures) SDL_DestroyTexture(texture.second);
 		mTextures.clear();
 
 		/* Delete our opengl context, destroy our window, and shutdown SDL */
+		IMG_Quit();
 		SDL_DestroyRenderer(mSdlRenderer);
 		SDL_GL_DeleteContext(mSdlContext);
 		SDL_DestroyWindow(mSdlWindow);
@@ -133,11 +140,11 @@ IWindowManager::GE_Err SdlWindowManager::End()
 
 void SdlWindowManager::Render()
 {
-	SDL_SetRenderDrawColor(mSdlRenderer, mBackgroundR * 255, mBackgroundG * 255, mBackgroundB * 255, 255);
+	SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255), 255);
 	SDL_RenderClear(mSdlRenderer);
 
 	// Render background
-	if (!mBackgroundImage.empty())
+	if (mBackground)
 	{
 		for (int i = 0; i <= SCR_WIDTH / GAME_BACKGROUND_WIDTH; i++)
 			for (int j = 0; j <= SCR_HEIGHT / GAME_BACKGROUND_HEIGHT; j++)
@@ -150,10 +157,11 @@ void SdlWindowManager::Render()
 		if (spritePair.second)
 		{
 			ISprite * sprite = spritePair.first;
-			glColor3f(sprite->GetRed(), sprite->GetGreen(), sprite->GetBlue());
+			SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(sprite->GetRed() * 255), static_cast<uint8_t>(sprite->GetGreen() * 255), static_cast<uint8_t>(sprite->GetBlue() * 255), 255);
 			RenderSprite(sprite);
 		}
 	}
+	SDL_RenderPresent(mSdlRenderer);
 }
 
 // *************************************************
@@ -165,7 +173,7 @@ void SdlWindowManager::SwapBuffers() {
 // *************************************************
 
 void SdlWindowManager::ClearColorBuffer(float r, float g, float b) {
-	SDL_SetRenderDrawColor(mSdlRenderer, r * 255, g * 255, b * 255, 255);
+	SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(r * 255), static_cast<uint8_t>(g * 255), static_cast<uint8_t>(b * 255), 255);
 	SDL_RenderClear(mSdlRenderer);
 }
 
@@ -173,20 +181,36 @@ void SdlWindowManager::ClearColorBuffer(float r, float g, float b) {
 
 ISprite * SdlWindowManager::RequireSprite(Vec2 pos, Vec2 size, const char * image, bool manageRender, float r, float g, float b)
 {
-	SDL_Surface* spriteId = nullptr;
+	SDL_Texture* spriteId = nullptr;
 	for (auto& texture : mTextures) 
 	{
 		if (texture.first == image) 
 		{
-			spriteId = static_cast<SDL_Surface*>(texture.second);
+			spriteId = static_cast<SDL_Texture*>(texture.second);
 			break;
 		}
 	}
 
 	if (!spriteId) 
 	{
-		spriteId = IMG_Load(image);
-		if (spriteId) mTextures.push_back({ image, spriteId });
+		SDL_Surface* surface = IMG_Load(image);
+		if (!surface)
+		{
+			printf( "Couldn't load image! SDL_image Error: %s\n", IMG_GetError() );
+		}
+		else
+		{
+			spriteId = SDL_CreateTextureFromSurface(mSdlRenderer, surface);
+			if(!spriteId)
+			{
+				printf( "Unable to create texture from %s! SDL Error: %s\n", image, SDL_GetError());
+			}
+			else
+			{
+				mTextures.push_back(std::make_pair(image, spriteId));
+			}
+			SDL_FreeSurface(surface);
+		}
 	}
 
 	ISprite * requiredSprite = GAME_NEW(SdlSprite, (pos, size, spriteId, r, g, b));
@@ -217,17 +241,17 @@ void SdlWindowManager::ReleaseSprite(ISprite * sprite)
 
 void SdlWindowManager::RenderSprite(ISprite * sprite) 
 {
-	RenderTexture(sprite->GetPos(), sprite->GetSize(), static_cast<SDL_Surface*>(sprite->GetTex().pId));
+	RenderTexture(sprite->GetPos(), sprite->GetSize(), static_cast<SDL_Texture*>(sprite->GetTex().pId));
 }
 
 // *************************************************
 
-void SdlWindowManager::RenderTexture(Vec2 pos, Vec2 size, SDL_Surface* tex) 
+void SdlWindowManager::RenderTexture(Vec2 pos, Vec2 size, SDL_Texture* texture) 
 {
-	if (tex) {
+	if (texture)
+	{
 		SDL_Rect rcDest = { static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y) };
-		SDL_BlitSurface(tex, NULL, mWindowSurface, &rcDest);
-		SDL_UpdateWindowSurface(mSdlWindow);
+		SDL_RenderCopy(mSdlRenderer, texture, nullptr, &rcDest);
 	}
 }
 
@@ -235,9 +259,9 @@ void SdlWindowManager::RenderTexture(Vec2 pos, Vec2 size, SDL_Surface* tex)
 
 void SdlWindowManager::SetBackgroundImage(const char * backgroundImage) 
 {
-	if(!mBackgroundImage.empty()) SDL_FreeSurface(mBackground);
+	if(mBackground) SDL_DestroyTexture(mBackground);
 	mBackgroundImage = backgroundImage;
-	mBackground = IMG_Load(mBackgroundImage.c_str());
+	LoadBackgroundImage();
 }
 
 // *************************************************
@@ -289,4 +313,24 @@ void SdlWindowManager::DrawLine(float x1, float y1, float x2, float y2)
 {
 	SDL_RenderDrawLine(mSdlRenderer, static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2));
 	SDL_RenderPresent(mSdlRenderer);
+}
+
+// *************************************************
+
+void SdlWindowManager::LoadBackgroundImage()
+{
+	SDL_Surface* surface = IMG_Load((DATA_FOLDER + mBackgroundImage).c_str());
+	if (!surface)
+	{
+		printf( "Couldn't load image! SDL_image Error: %s\n", IMG_GetError() );
+	}
+	else
+	{
+		mBackground = SDL_CreateTextureFromSurface(mSdlRenderer, surface);
+		if(!mBackground)
+		{
+			printf( "Unable to create texture from %s! SDL Error: %s\n", mBackgroundImage, SDL_GetError());
+		}
+		SDL_FreeSurface(surface);
+	}
 }

@@ -7,13 +7,13 @@
 #include <stdint.h>
 
 
-struct SDL_Surface;
+struct SDL_Texture;
 
 class SdlSprite : public ISprite
 {
 public:
 
-	SdlSprite(Vec2 pos, Vec2 size, SDL_Surface* tex, float red, float green, float blue);
+	SdlSprite(Vec2 pos, Vec2 size, SDL_Texture* tex, float red, float green, float blue);
 
 	Vec2         GetPos       ()                                    const; 
 	void         SetPos       (float x, float y); 
@@ -29,7 +29,7 @@ private:
 
 	Vec2                   mPos;
 	Vec2                   mSize;
-	SDL_Surface*           mTex;
+	SDL_Texture*           mTex;
 	std::array<float, 3>   mColor;
 };
 
