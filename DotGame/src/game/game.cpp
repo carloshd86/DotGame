@@ -8,11 +8,12 @@
 #include "memorycontrol.h"
 #include <fstream>
 #include "component.h"
-//#include "componentrenderable.h"
+#include "componentrenderable.h"
+#include "componentdot.h"
 #include <ctime>
 
-const int Game::MAX_ENTITIES         = 5;
-const int Game::SECONDS_SPAWN_ENTITY = 3;
+const int Game::MAX_DOTS          = 5;
+const int Game::SECONDS_SPAWN_DOT = 3;
 
 // *************************************************
 
@@ -63,19 +64,13 @@ void Game::End()
 
 void Game::Run(float deltaTime)
 {
-	if (mEntities.size() < MAX_ENTITIES)
+	if (mEntities.size() < MAX_DOTS)
 	{	
 		mTimeSinceLastEntity += deltaTime; 
-		if (static_cast<int>(mTimeSinceLastEntity) >= SECONDS_SPAWN_ENTITY)
+		if (static_cast<int>(mTimeSinceLastEntity) >= SECONDS_SPAWN_DOT)
 		{
 			mTimeSinceLastEntity = 0.f;
-			int newTileIndex = 0;
-			do {
-				newTileIndex = rand() % (NUM_COLS * NUM_ROWS);
-			} while (mTilesOccupied.find(newTileIndex) != mTilesOccupied.end());
-
-			// TODO get position from tileIndex
-			// TODO spawn new entity with random color		
+			SpawnDot();
 		}
 	}
 
@@ -121,4 +116,60 @@ int Game::GetTileIndexFromScreenPosition(Vec2 pos)
 	}
 
 	return tileIndex;
+}
+
+// *************************************************
+
+Vec2 Game::GetPositionFromTileIndex(int tileIndex)
+{
+	Vec2 pos;
+
+	int i = tileIndex % NUM_COLS;
+	int j = tileIndex / NUM_COLS;
+	pos.x = GRID_POS_X + FRAME_WIDTH * i;
+	pos.y = GRID_POS_Y + FRAME_HEIGHT * j;
+
+	return pos;
+}
+
+// *************************************************
+
+void Game::SpawnDot()
+{
+	int dotTile = 0;
+	do {
+		dotTile = rand() % (NUM_COLS * NUM_ROWS);
+	} while (mTilesOccupied.find(dotTile) != mTilesOccupied.end());
+
+	Vec2 dotPos = GetPositionFromTileIndex(dotTile);
+
+	std::string dotRedImg   = DATA_FOLDER + "ClickableRed.png";
+	std::string dotGreenImg = DATA_FOLDER + "ClickableGreen.png";
+
+	const char* dotImage  = nullptr;
+	CDot::DotType dotType = CDot::DotType::Green;
+
+	int iDotType = rand() % 2;
+	if (iDotType) 
+	{
+		dotImage = dotGreenImg.c_str();
+		dotType  = CDot::DotType::Green;
+	}
+	else
+	{
+		dotImage = dotRedImg.c_str();
+		dotType  = CDot::DotType::Red;
+	}
+
+	Entity* dotEntity        = GAME_NEW(Entity, (dotPos));
+	CRenderable* cRenderable = GAME_NEW(CRenderable, (dotEntity, Vec2(FRAME_WIDTH, FRAME_HEIGHT), dotImage));
+	cRenderable->Init();
+	CDot * cDot              = GAME_NEW(CDot, (dotEntity, dotType, dotTile));
+	cDot->Init();
+	
+	dotEntity->AddComponent(cRenderable);
+	dotEntity->AddComponent(cDot);
+
+	mTilesOccupied.insert(dotTile);
+	mEntities.push_back(dotEntity);
 }

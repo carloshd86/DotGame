@@ -26,18 +26,21 @@ public:
 	GameLevel GetGameLevel() const;
 	void      SetGameLevel(GameLevel level);
 
-	int GetTileIndexFromScreenPosition(Vec2 pos);
+	int  GetTileIndexFromScreenPosition(Vec2 pos);
+	Vec2 GetPositionFromTileIndex(int tileIndex);
 	
 private:
-	static const int MAX_ENTITIES;
-	static const int SECONDS_SPAWN_ENTITY;
+	static const int MAX_DOTS;
+	static const int SECONDS_SPAWN_DOT;
 
-	bool                   mInitialized;
-	bool                   mEnded;
-	std::vector<Entity *>  mEntities;
-	GameLevel              mGameLevel;
-	float                  mTimeSinceLastEntity;
-	std::set<int>          mTilesOccupied;
+	bool                  mInitialized;
+	bool                  mEnded;
+	std::vector<Entity *> mEntities;
+	GameLevel             mGameLevel;
+	float                 mTimeSinceLastEntity;
+	std::set<int>         mTilesOccupied;
+
+	void SpawnDot();
 };
 
 #endif

@@ -6,7 +6,8 @@ SdlSprite::SdlSprite(Vec2 pos, Vec2 size, SDL_Texture* tex, float red, float gre
 	mPos(pos),
 	mSize(size),
 	mTex (tex),
-	mColor { red, green, blue } {}
+	mColor { red, green, blue },
+	mVisible (true) {}
 
 // *************************************************
 
@@ -75,4 +76,18 @@ float SdlSprite::GetGreen() const
 float SdlSprite::GetBlue() const
 {
 	return mColor[2];
+}
+
+// *************************************************
+
+bool SdlSprite::GetVisible() const
+{
+	return mVisible;
+}
+
+// *************************************************
+
+void SdlSprite::SetVisible(bool visible)
+{
+	mVisible = visible;
 }

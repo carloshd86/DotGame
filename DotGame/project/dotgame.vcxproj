@@ -23,6 +23,8 @@
     <ClCompile Include="..\src\applicationModes\applicationmodegame.cpp" />
     <ClCompile Include="..\src\applicationModes\applicationmodegameover.cpp" />
     <ClCompile Include="..\src\applicationModes\applicationmodeintro.cpp" />
+    <ClCompile Include="..\src\components\componentdot.cpp" />
+    <ClCompile Include="..\src\components\componentrenderable.cpp" />
     <ClCompile Include="..\src\entities\entity.cpp" />
     <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
@@ -39,6 +41,8 @@
     <ClInclude Include="..\src\applicationModes\applicationmodegameover.h" />
     <ClInclude Include="..\src\applicationModes\applicationmodeintro.h" />
     <ClInclude Include="..\src\components\component.h" />
+    <ClInclude Include="..\src\components\componentdot.h" />
+    <ClInclude Include="..\src\components\componentrenderable.h" />
     <ClInclude Include="..\src\core\core.h" />
     <ClInclude Include="..\src\entities\entity.h" />
     <ClInclude Include="..\src\eventManager\eventmanager.h" />

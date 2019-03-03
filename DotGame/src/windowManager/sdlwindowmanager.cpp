@@ -157,8 +157,11 @@ void SdlWindowManager::Render()
 		if (spritePair.second)
 		{
 			ISprite * sprite = spritePair.first;
-			SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(sprite->GetRed() * 255), static_cast<uint8_t>(sprite->GetGreen() * 255), static_cast<uint8_t>(sprite->GetBlue() * 255), 255);
-			RenderSprite(sprite);
+			if (sprite->GetVisible())
+			{
+				SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(sprite->GetRed() * 255), static_cast<uint8_t>(sprite->GetGreen() * 255), static_cast<uint8_t>(sprite->GetBlue() * 255), 255);
+				RenderSprite(sprite);
+			}
 		}
 	}
 	SDL_RenderPresent(mSdlRenderer);
@@ -329,7 +332,7 @@ void SdlWindowManager::LoadBackgroundImage()
 		mBackground = SDL_CreateTextureFromSurface(mSdlRenderer, surface);
 		if(!mBackground)
 		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", mBackgroundImage, SDL_GetError());
+			printf( "Unable to create texture from %s! SDL Error: %s\n", mBackgroundImage.c_str(), SDL_GetError());
 		}
 		SDL_FreeSurface(surface);
 	}
