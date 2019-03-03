@@ -43,19 +43,23 @@ public:
 	GameLevel GetGameLevel() const;
 	void      SetGameLevel(GameLevel level);
 
-	int  GetTileIndexFromScreenPosition(Vec2 pos);
-	Vec2 GetPositionFromTileIndex(int tileIndex);
-
-	void   IncreaseScore (Entity* entityHit);
-	void   SetGameOver   (GameResult result);
+	void IncreaseScore     (Entity* entityHit);
+	void SetGameOver       (GameResult result);
+	void ReleaseTile       (int tile);
+	int  ObtainNewFreeTile ();
 
 	bool Register   (IScoreListener* listener);
 	bool Unregister (IScoreListener* listener);
 	
+	static int  GetTileIndexFromScreenPosition (Vec2 pos);
+	static Vec2 GetPositionFromTileIndex       (int tileIndex);
+
 private:
 	static const int    MAX_DOTS;
 	static const int    SECONDS_SPAWN_DOT;
 	static const size_t SCORE_WIN;
+	static const int    MIN_SECONDS_CHANGE_PHASE_DOT;
+	static const int    MAX_SECONDS_CHANGE_PHASE_DOT;
 
 	bool                 mInitialized;
 	bool                 mEnded;

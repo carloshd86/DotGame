@@ -31,15 +31,15 @@ private:
 	Vec2               mSize;
 	std::string        mImage;
 	ISprite           *m_pSprite;
-	bool               mVisible;
 	bool               mInitialized;
 	MessageCallbackMap mMessageCallbacks;
 
-	void OnSetVisible    (GameMessage& message);
-	void OnSetPosition   (GameMessage& message);
-	void OnSetSize       (GameMessage& message);
-	void OnRequireSize   (GameMessage& message);
-	void OnRequireSprite (GameMessage& message);
+	void OnSetVisible     (GameMessage& message);
+	void OnSetPosition    (GameMessage& message);
+	void OnSetSize        (GameMessage& message);
+	void OnRequireSize    (GameMessage& message);
+	void OnRequireSprite  (GameMessage& message);
+	void OnRequireVisible (GameMessage& message);
 };
 
 

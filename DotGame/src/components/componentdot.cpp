@@ -3,10 +3,12 @@
 #include "globals.h"
 #include "asserts.h"
 
-CDot::CDot(Entity * owner, Game::DotType type, int tile) :
-	Component (owner),
-	mType     (type),
-	mTile     (tile) {}
+CDot::CDot(Entity * owner, Game::DotType type, int tile, float timeToChangePhase) :
+	Component                 (owner),
+	mType                     (type),
+	mTile                     (tile),
+	mTimeToChangePhase        (timeToChangePhase),
+	mCurrentTimeToChangePhase (0.f) {}
 
 // *************************************************
 
@@ -49,6 +51,12 @@ void CDot::End()
 
 void CDot::Run(float deltaTime)
 {
+	mCurrentTimeToChangePhase += deltaTime;
+	if (mCurrentTimeToChangePhase >= mTimeToChangePhase)
+	{
+		ChangePhase();
+		mCurrentTimeToChangePhase = 0.f;
+	}
 }
 
 // *************************************************
@@ -132,12 +140,38 @@ bool CDot::IsPositionOverDot(Vec2 pos) const
 	Vec2 dotPos = mOwner->GetPos();
 	RequireRenderSizeMessage rrsm;
 	mOwner->ReceiveMessage(rrsm);
-	if (rrsm.GetProcessed())
+	RequireRenderVisibilityMessage rrvm;
+	mOwner->ReceiveMessage(rrvm);
+	GAME_ASSERT(rrsm.GetProcessed() && rrvm.GetProcessed());
+	if (rrvm.GetVisible())
 	{
 		result = dotPos.x < pos.x && dotPos.x + rrsm.GetX() > pos.x
 			     && dotPos.y < pos.y && dotPos.y + rrsm.GetY() > pos.y;
 	}
 	return result;
+}
+
+// *************************************************
+
+void CDot::ChangePhase()
+{
+	RequireRenderVisibilityMessage rrvm;
+	mOwner->ReceiveMessage(rrvm);
+	GAME_ASSERT(rrvm.GetProcessed());
+	
+	SetVisibleMessage svm(!rrvm.GetVisible());
+	Vec2 newPos(-999.f,-999.f);
+	if (svm.GetVisible())
+	{
+		mTile = g_pGame->ObtainNewFreeTile();
+		newPos = Game::GetPositionFromTileIndex(mTile);
+	}
+	else
+	{
+		g_pGame->ReleaseTile(GetTile());
+	}
+	mOwner->ReceiveMessage(svm);
+	mOwner->SetPos(newPos);
 }
 
 // *************************************************

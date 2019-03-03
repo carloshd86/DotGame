@@ -12,9 +12,11 @@
 #include "componentdot.h"
 #include <ctime>
 
-const int    Game::MAX_DOTS          = 5;
-const int    Game::SECONDS_SPAWN_DOT = 3;
-const size_t Game::SCORE_WIN         = 10;
+const int    Game::MAX_DOTS                     = 5;
+const int    Game::SECONDS_SPAWN_DOT            = 2;
+const size_t Game::SCORE_WIN                    = 10;
+const int    Game::MIN_SECONDS_CHANGE_PHASE_DOT = 1;
+const int    Game::MAX_SECONDS_CHANGE_PHASE_DOT = 5;
 
 // *************************************************
 
@@ -139,12 +141,8 @@ Vec2 Game::GetPositionFromTileIndex(int tileIndex)
 
 void Game::SpawnDot()
 {
-	int dotTile = 0;
-	do {
-		dotTile = rand() % (NUM_COLS * NUM_ROWS);
-	} while (mTilesOccupied.find(dotTile) != mTilesOccupied.end());
-
-	Vec2 dotPos = GetPositionFromTileIndex(dotTile);
+	int dotTile = ObtainNewFreeTile();
+	Vec2 dotPos = Game::GetPositionFromTileIndex(dotTile);
 
 	std::string dotRedImg   = DATA_FOLDER + "ClickableRed.png";
 	std::string dotGreenImg = DATA_FOLDER + "ClickableGreen.png";
@@ -167,13 +165,13 @@ void Game::SpawnDot()
 	Entity* dotEntity        = GAME_NEW(Entity, (dotPos));
 	CRenderable* cRenderable = GAME_NEW(CRenderable, (dotEntity, Vec2(FRAME_WIDTH, FRAME_HEIGHT), dotImage));
 	cRenderable->Init();
-	CDot * cDot              = GAME_NEW(CDot, (dotEntity, dotType, dotTile));
+	int timePhaseChange      = MIN_SECONDS_CHANGE_PHASE_DOT + (rand() % (MAX_SECONDS_CHANGE_PHASE_DOT - MIN_SECONDS_CHANGE_PHASE_DOT + 1));
+	CDot * cDot              = GAME_NEW(CDot, (dotEntity, dotType, dotTile, static_cast<float>(timePhaseChange)));
 	cDot->Init();
 	
 	dotEntity->AddComponent(cRenderable);
 	dotEntity->AddComponent(cDot);
 
-	mTilesOccupied.insert(dotTile);
 	mEntities.push_back(dotEntity);
 }
 
@@ -193,7 +191,7 @@ void Game::DeleteEntities()
 				RequireTileMessage rtm;
 				(*it)->ReceiveMessage(rtm);
 				GAME_ASSERT(rtm.GetProcessed());
-				mTilesOccupied.erase(mTilesOccupied.find(rtm.GetTile()));
+				ReleaseTile(rtm.GetTile());
 
 				RequireSpriteMessage rsm;
 				(*it)->ReceiveMessage(rsm);
@@ -240,6 +238,28 @@ void Game::SetGameOver(GameResult result)
 	else                   gGameSuccess = false;
 
 	g_pApplicationManager->SwitchMode(AM_GameOver);
+}
+
+// *************************************************
+
+void Game::ReleaseTile(int tile)
+{
+	if (mTilesOccupied.find(tile) != mTilesOccupied.end())
+		mTilesOccupied.erase(mTilesOccupied.find(tile));
+}
+
+// *************************************************
+
+int Game::ObtainNewFreeTile()
+{
+	int freeTile = 0;
+	do {
+		freeTile = rand() % (NUM_COLS * NUM_ROWS);
+	} while (mTilesOccupied.find(freeTile) != mTilesOccupied.end());
+
+	mTilesOccupied.insert(freeTile);
+
+	return freeTile;
 }
 
 // *************************************************

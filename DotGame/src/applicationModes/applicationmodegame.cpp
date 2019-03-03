@@ -154,7 +154,7 @@ void ApplicationModeGame::QuitGame()
 
 void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
 {
-	int tileIndex = g_pGame->GetTileIndexFromScreenPosition(pos);
+	int tileIndex = Game::GetTileIndexFromScreenPosition(pos);
 
 	if (mLastTileIndexHover != tileIndex)
 	{

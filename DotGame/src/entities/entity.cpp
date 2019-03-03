@@ -62,4 +62,13 @@ Vec2 Entity::GetPos() const
 void Entity::SetPos(Vec2 pos)
 {
 	mPos = pos;
+	for (Component* component : mComponents)
+	{
+		IMessageReceiver * cReceiver = dynamic_cast<IMessageReceiver*>(component);
+		if (cReceiver)
+		{
+			SetPositionMessage spm(mPos.x, mPos.y);
+			cReceiver->ReceiveMessage(spm);
+		}
+	}
 }

@@ -7,7 +7,7 @@
 class CDot : public Component, public IEventManager::IListener, public IMessageReceiver
 {
 public:
-	CDot(Entity* owner, Game::DotType type, int tile);
+	CDot(Entity* owner, Game::DotType type, int tile, float timeToChangePhase);
 
 	virtual ~CDot();
 
@@ -32,6 +32,10 @@ private:
 	Game::DotType      mType;
 	int                mTile;
 	MessageCallbackMap mMessageCallbacks;
+	float              mTimeToChangePhase;
+	float              mCurrentTimeToChangePhase;
+
+	void ChangePhase();
 
 	void OnRequireDotType(GameMessage& message);
 	void OnRequireTile   (GameMessage& message);
