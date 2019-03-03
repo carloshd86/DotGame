@@ -48,13 +48,17 @@ void ApplicationModeGame::Activate()
 	if (!g_pGame) g_pGame = GAME_NEW(Game, ());
 	g_pGame->SetGameLevel(g_gameLevel);
 
+	gFinalScore = 0;
 	g_pGame->Init();
-	g_pWindowManager->Init();
+	g_pWindowManager->InitWindow();
 
 	std::string tileBackground = DATA_FOLDER + "TileBackground.png";
+	Vec2 frameSize(FRAME_HEIGHT, FRAME_WIDTH);
 	for (int j = 0; j < NUM_ROWS; j++) {
 		for (int i = 0; i < NUM_COLS; i++) {
-			mTilesMap[NUM_COLS * j + i] = g_pWindowManager->RequireSprite(Vec2(static_cast<float>(GRID_POS_X + FRAME_WIDTH * i), static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * j)), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str());
+			float posX = static_cast<float>(GRID_POS_X + FRAME_WIDTH * i);
+			float posY = static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * j);
+			mTilesMap[NUM_COLS * j + i] = g_pWindowManager->RequireSprite(Vec2(posX, posY), frameSize, tileBackground.c_str(), 0);
 		}
 	}
 
@@ -67,6 +71,8 @@ void ApplicationModeGame::Deactivate()
 {
 	GAME_ASSERT(g_pEventManager);
 
+	gFinalScore = g_pGame->GetFinalScore();
+
 	mTilesMap.clear();
 
 	Properties::RemoveInstance();
@@ -74,7 +80,7 @@ void ApplicationModeGame::Deactivate()
 
 	g_pEventManager->Unregister(this);
 	//g_pSoundManager->UnloadWav(mMusicId);
-	g_pWindowManager->End();
+	g_pWindowManager->EndWindow();
 	g_pGame->End();
 }
 
@@ -128,18 +134,6 @@ bool ApplicationModeGame::ProcessEvent(const Event& event)
 		CheckTileMouseHover(Vec2(gMouseX, gMouseY));
 		break;
 	}
-	case IEventManager::EM_Event::MouseClick: 
-	{
-		const EventMouseClick* eMouseClick = dynamic_cast<const EventMouseClick*>(&event);
-		if (EventMouseClick::EMouseButton::Left == eMouseClick->GetMouseButton())
-		{
-			// TODO check if mouse position is green circle
-		} else if (EventMouseClick::EMouseButton::Right == eMouseClick->GetMouseButton())
-		{
-			// TODO check if mouse position is red circle
-		}
-		break;
-	}
 	case IEventManager::EM_Event::Quit: 
 	{
 		QuitGame();
@@ -171,7 +165,9 @@ void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
 			std::string tileBackground = DATA_FOLDER + "TileBackground.png";
 			int i = mLastTileIndexHover % NUM_COLS;
 			int j = mLastTileIndexHover / NUM_COLS;
-			mTilesMap[mLastTileIndexHover] = g_pWindowManager->RequireSprite(Vec2(static_cast<float>(GRID_POS_X + FRAME_WIDTH * i), static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * j)), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str());
+			float posX = static_cast<float>(GRID_POS_X + FRAME_WIDTH * i);
+			float posY = static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * j);
+			mTilesMap[mLastTileIndexHover] = g_pWindowManager->RequireSprite(Vec2(posX, posY), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str(), 0);
 			mLastTileIndexHover = -1;
 		}
 
@@ -181,7 +177,9 @@ void ApplicationModeGame::CheckTileMouseHover(Vec2 pos)
 			std::string tileBackground = DATA_FOLDER + "TileMouseOver.png";
 			int i = tileIndex % NUM_COLS;
 			int j = tileIndex / NUM_COLS;
-			mTilesMap[tileIndex] = g_pWindowManager->RequireSprite(Vec2(static_cast<float>(GRID_POS_X + FRAME_WIDTH * i), static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * j)), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str());
+			float posX = static_cast<float>(GRID_POS_X + FRAME_WIDTH * i);
+			float posY = static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * j);
+			mTilesMap[tileIndex] = g_pWindowManager->RequireSprite(Vec2(posX, posY), Vec2(FRAME_HEIGHT, FRAME_WIDTH), tileBackground.c_str(), 0);
 			mLastTileIndexHover = tileIndex;
 		}
 	}

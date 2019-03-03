@@ -12,8 +12,9 @@
 #include "componentdot.h"
 #include <ctime>
 
-const int Game::MAX_DOTS          = 5;
-const int Game::SECONDS_SPAWN_DOT = 3;
+const int    Game::MAX_DOTS          = 5;
+const int    Game::SECONDS_SPAWN_DOT = 3;
+const size_t Game::SCORE_WIN         = 10;
 
 // *************************************************
 
@@ -75,6 +76,8 @@ void Game::Run(float deltaTime)
 	}
 
 	for (auto entity : mEntities) entity->Run(deltaTime);
+
+	DeleteEntities();
 }
 
 // *************************************************
@@ -147,18 +150,18 @@ void Game::SpawnDot()
 	std::string dotGreenImg = DATA_FOLDER + "ClickableGreen.png";
 
 	const char* dotImage  = nullptr;
-	CDot::DotType dotType = CDot::DotType::Green;
+	DotType dotType = DotType::Green;
 
 	int iDotType = rand() % 2;
 	if (iDotType) 
 	{
 		dotImage = dotGreenImg.c_str();
-		dotType  = CDot::DotType::Green;
+		dotType  = DotType::Green;
 	}
 	else
 	{
 		dotImage = dotRedImg.c_str();
-		dotType  = CDot::DotType::Red;
+		dotType  = DotType::Red;
 	}
 
 	Entity* dotEntity        = GAME_NEW(Entity, (dotPos));
@@ -172,4 +175,71 @@ void Game::SpawnDot()
 
 	mTilesOccupied.insert(dotTile);
 	mEntities.push_back(dotEntity);
+}
+
+// *************************************************
+
+void Game::DeleteEntities()
+{
+	size_t numEntitiesToDelete = mEntitiesToDelete.size();
+	if (numEntitiesToDelete)
+	{
+		auto etdEnd = mEntitiesToDelete.end();
+		auto it = mEntities.begin();
+		while (numEntitiesToDelete > 0 && it != mEntities.end())
+		{
+			if (mEntitiesToDelete.find(*it) != etdEnd)
+			{
+				RequireTileMessage rtm;
+				(*it)->ReceiveMessage(rtm);
+				GAME_ASSERT(rtm.GetProcessed());
+				mTilesOccupied.erase(mTilesOccupied.find(rtm.GetTile()));
+
+				RequireSpriteMessage rsm;
+				(*it)->ReceiveMessage(rsm);
+				GAME_ASSERT(rsm.GetProcessed());
+				g_pWindowManager->ReleaseSprite(rsm.GetSprite());
+
+				it = mEntities.erase(it);
+				numEntitiesToDelete--;
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		mEntitiesToDelete.clear();
+	}
+}
+
+// *************************************************
+
+void Game::IncreaseScore(Entity* entityHit)
+{
+	RequireDotTypeMessage rdtm;
+	entityHit->ReceiveMessage(rdtm);
+	GAME_ASSERT(rdtm.GetProcessed());
+	mScore.push_back(rdtm.GetDotType());
+
+	mEntitiesToDelete.insert(entityHit);
+
+	if (mScore.size() >= SCORE_WIN) SetGameOver(GameResult::Success);
+}
+
+// *************************************************
+
+void Game::SetGameOver(GameResult result)
+{
+	if (result == Success) gGameSuccess = true;
+	else                   gGameSuccess = false;
+
+	g_pApplicationManager->SwitchMode(AM_GameOver);
+}
+
+// *************************************************
+
+size_t Game::GetFinalScore() const
+{
+	return mScore.size();
 }

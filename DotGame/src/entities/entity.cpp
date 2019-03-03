@@ -42,9 +42,9 @@ void Entity::AddComponent(Component * component)
 
 void Entity::ReceiveMessage(GameMessage &message)
 {
-	for (auto component : mComponents)
+	for (Component* component : mComponents)
 	{
-		IMessageReceiver * cReceiver = dynamic_cast<IMessageReceiver *>(component);
+		IMessageReceiver * cReceiver = dynamic_cast<IMessageReceiver*>(component);
 		if (cReceiver)
 			cReceiver->ReceiveMessage(message);
 	}

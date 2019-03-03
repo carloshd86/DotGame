@@ -16,9 +16,11 @@ IWindowManager     * g_pWindowManager;
 ISoundManager      * g_pSoundManager;
 IEventManager      * g_pEventManager;
 IFontManager       * g_pFontManager;
-bool                 gQuit   = false;
-float                gMouseX = 0.f;
-float                gMouseY = 0.f;
+bool                 gQuit        = false;
+float                gMouseX      = 0.f;
+float                gMouseY      = 0.f;
+int                  gFinalScore  = 0;
+bool                 gGameSuccess = false;
 
 int main(int argc, char *argv[])
 {
@@ -64,7 +66,6 @@ int main(int argc, char *argv[])
 		g_pWindowManager->PumpEvents();
 	}
 
-	//FONT_End();
 	//g_pSoundManager->EndSound();
 
 	GAME_DELETE(g_pGame);

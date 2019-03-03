@@ -21,12 +21,17 @@ public:
 private:
 	static const float TIME_TO_START_GAME;
 
-	Properties  *m_pProperties;
-	unsigned int mMusicId;
-	float        mTimeElapsed; 
+	Properties *m_pProperties;
+	uint32_t    mMusicId;
+	float       mTimeElapsed;
+	int         mRestingTime;
+	std::string mTitleText;
+	std::string mScoreText;
+	std::string mStartText;
+	std::string mAutomaticStartText;
 
-	void StartLevel (Game::GameLevel level);
-	void QuitGame   ();
+	void StartLevel(Game::GameLevel level);
+	void QuitGame  ();
 };
 
 #endif

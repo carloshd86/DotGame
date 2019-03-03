@@ -2,7 +2,6 @@
 #define __APPLICATION_MODE_MENU_H__
 
 #include "applicationmode.h"
-#include "game.h"
 
 class ApplicationModeIntro : public ApplicationMode, public IEventManager::IListener
 {
@@ -26,9 +25,12 @@ private:
 	uint32_t    mMusicId;
 	float       mTimeElapsed;
 	int         mRestingTime;
+	std::string mTitleText;
+	std::string mStartText;
+	std::string mAutomaticStartText;
 
-	void StartLevel           (Game::GameLevel level);
-	void QuitGame             ();
+	void StartLevel(Game::GameLevel level);
+	void QuitGame  ();
 };
 
 #endif

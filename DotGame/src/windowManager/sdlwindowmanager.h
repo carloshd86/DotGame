@@ -10,6 +10,9 @@ class SdlSprite;
 struct SDL_Surface;
 struct SDL_Texture;
 
+typedef std::map<int, std::vector<std::pair<ISprite *, bool>>> SpritePriorityMap;
+typedef std::vector<std::pair<std::string, SDL_Texture*>>      TextureVector;
+
 class SdlWindowManager : public IWindowManager
 {
 public:
@@ -19,13 +22,14 @@ public:
 
 	GE_Err    Init               ();
 	GE_Err    End                ();
+	GE_Err    InitWindow         ();
+	GE_Err    EndWindow          ();
 	void      Render             ();
 	void      SwapBuffers        ();
 	void      ClearColorBuffer   (float r, float g, float b);
-	ISprite * RequireSprite      (Vec2 pos, Vec2 size, const char * image, bool manageRender = true, float r = 1.f, float g = 1.f, float b = 1.f);
+	ISprite * RequireSprite      (Vec2 pos, Vec2 size, const char * image, int priority = 1, bool manageRender = true, float r = 1.f, float g = 1.f, float b = 1.f);
 	void      ReleaseSprite      (ISprite * sprite);
 	void      RenderSprite       (ISprite * sprite);
-	void      SetBackgroundImage (const char * backgroundImage);
 	void      SetBackgroundColor (float r, float g, float b);
 	Vec2      GetWorldSize       ();
 	bool      WindowShouldClose  ();
@@ -42,21 +46,18 @@ private:
 	const float	 GAME_BACKGROUND_WIDTH  = 128;
 	const float	 GAME_BACKGROUND_HEIGHT = 128;
 
-	Window                                                 mWindow;
-	Context                                                mContext;
-	Renderer                                               mRenderer;
-	SDL_Surface*                                           mWindowSurface;
-	bool                                                   mInitialized;
-	bool                                                   mEnded;
-	std::string                                            mBackgroundImage;
-	SDL_Texture*                                           mBackground;
-	float                                                  mBackgroundR;
-	float                                                  mBackgroundG;
-	float                                                  mBackgroundB;
-	std::vector<std::pair<ISprite *, bool>>                mSprites;
-	std::vector<std::pair<std::string, SDL_Texture*>>      mTextures;
+	Window            mWindow;
+	Context           mContext;
+	Renderer          mRenderer;
+	SDL_Surface*      mWindowSurface;
+	bool              mInitialized;
+	bool              mEnded;
+	float             mBackgroundR;
+	float             mBackgroundG;
+	float             mBackgroundB;
+	SpritePriorityMap mSprites;
+	TextureVector     mTextures;
 
-	void LoadBackgroundImage();
 	void RenderTexture(Vec2 pos, Vec2 size, SDL_Texture* surface);
 };
 

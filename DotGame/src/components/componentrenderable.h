@@ -35,10 +35,11 @@ private:
 	bool               mInitialized;
 	MessageCallbackMap mMessageCallbacks;
 
-	void OnSetVisible  (GameMessage& message);
-	void OnSetPosition (GameMessage& message);
-	void OnSetSize     (GameMessage& message);
-	void OnRequireSize (GameMessage& message);
+	void OnSetVisible    (GameMessage& message);
+	void OnSetPosition   (GameMessage& message);
+	void OnSetSize       (GameMessage& message);
+	void OnRequireSize   (GameMessage& message);
+	void OnRequireSprite (GameMessage& message);
 };
 
 

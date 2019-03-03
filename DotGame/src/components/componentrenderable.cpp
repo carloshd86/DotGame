@@ -26,10 +26,11 @@ void CRenderable::Init()
 		GAME_ASSERT(g_pWindowManager);
 		m_pSprite = g_pWindowManager->RequireSprite(mOwner->GetPos(), mSize, mImage.c_str());
 
-		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::SetPosition      , std::bind(&CRenderable::OnSetSize    , this, std::placeholders::_1)));
-		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::SetSize          , std::bind(&CRenderable::OnSetSize    , this, std::placeholders::_1)));
-		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::RequireRenderSize, std::bind(&CRenderable::OnRequireSize, this, std::placeholders::_1)));
-		
+		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::SetPosition      , std::bind(&CRenderable::OnSetSize      , this, std::placeholders::_1)));
+		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::SetSize          , std::bind(&CRenderable::OnSetSize      , this, std::placeholders::_1)));
+		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::RequireRenderSize, std::bind(&CRenderable::OnRequireSize  , this, std::placeholders::_1)));
+		mMessageCallbacks.insert(std::pair<GameMessage::GM_Type, MessageCallbackFun>(GameMessage::GM_Type::RequireSprite    , std::bind(&CRenderable::OnRequireSprite, this, std::placeholders::_1)));
+
 		mInitialized = true;
 	}
 }
@@ -135,6 +136,18 @@ void CRenderable::OnRequireSize(GameMessage& message)
 	{
 		rsm->SetX(mSize.x);
 		rsm->SetY(mSize.y);
+		rsm->SetProcessed(true);
+	}
+}
+
+// *************************************************
+
+void CRenderable::OnRequireSprite(GameMessage& message)
+{
+	RequireSpriteMessage * rsm = dynamic_cast<RequireSpriteMessage *>(&message);
+	if (rsm)
+	{
+		rsm->SetSprite(m_pSprite);
 		rsm->SetProcessed(true);
 	}
 }

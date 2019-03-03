@@ -42,14 +42,18 @@ void ApplicationModeIntro::Activate()
 	g_pEventManager->Register(this, IEventManager::EM_Event::MouseClick);
 	g_pEventManager->Register(this, IEventManager::EM_Event::Quit);
 
-	g_pWindowManager->Init();
+	g_pWindowManager->InitWindow();
+	g_pWindowManager->SetBackgroundColor(0.f, 0.f, 0.f);
 
 	mTimeElapsed = 0.f;
 	mRestingTime = static_cast<int>(TIME_TO_START_GAME);
 
-	//m_pSprite = g_pWindowManager->RequireSprite(Vec2(SCR_HEIGHT/4.f, 400.f), Vec2(400.f, 56.f), (DATA_FOLDER + "title.png").c_str(), false);
+	mTitleText          = m_pProperties->GetProperty("intro.title.text");
+	mStartText          = m_pProperties->GetProperty("intro.click_start.text");
+	mAutomaticStartText = m_pProperties->GetProperty("intro.time_start.text");
 
-	//mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "Superboy.wav").c_str());
+	/*mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "Superboy.wav").c_str());
+	if (mMusicId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);*/
 }
 
 // *************************************************
@@ -63,7 +67,7 @@ void ApplicationModeIntro::Deactivate()
 
 	g_pEventManager->Unregister(this);
 	//g_pSoundManager->UnloadWav(mMusicId);
-	g_pWindowManager->End();
+	g_pWindowManager->EndWindow();
 }
 
 // *************************************************
@@ -91,9 +95,9 @@ void ApplicationModeIntro::Run(float deltaTime)
 void ApplicationModeIntro::Render()
 {
 	g_pWindowManager->Render();
-	g_pFontManager->DrawText(Vec2(100, 100), m_pProperties->GetProperty("intro.title.text").c_str());
-	g_pFontManager->DrawText(Vec2(100, 200), m_pProperties->GetProperty("intro.click_start.text").c_str());
-	std::string timeMessage = m_pProperties->GetProperty("intro.time_start.text");
+	g_pFontManager->DrawText(Vec2(100, 100), mTitleText.c_str());
+	g_pFontManager->DrawText(Vec2(100, 200), mStartText.c_str());
+	std::string timeMessage = mAutomaticStartText;
 	timeMessage.append(std::to_string(mRestingTime));
 	g_pFontManager->DrawText(Vec2(100, 300), timeMessage.c_str());
 }

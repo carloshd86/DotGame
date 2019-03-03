@@ -2,6 +2,8 @@
 #define __MESSAGES_H__
 
 #include "messagereceiver.h"
+#include "game.h"
+#include "sprite.h"
 
 class GameMessage
 {
@@ -15,7 +17,9 @@ public:
 		RequireRenderSize,
 		RequireRenderVisibility,
 		SetTile,
-		RequireTile
+		RequireTile,
+		RequireDotType,
+		RequireSprite
 	};
 
 	GameMessage(GM_Type type) :
@@ -159,7 +163,7 @@ public:
 		GameMessage (GM_Type::SetTile),
 		mTile       (tile) {}
 
-	float GetTile() const { return mTile; }
+	int GetTile() const { return mTile; }
 
 private:
 	int mTile;
@@ -183,6 +187,46 @@ public:
 private:
 	bool mProcessed;
 	int  mTile;
+};
+
+// *************************************************
+
+class RequireDotTypeMessage : public GameMessage
+{
+public:
+	RequireDotTypeMessage() : 
+		GameMessage (GM_Type::RequireDotType),
+		mProcessed  (false),
+		mDotType    (Game::DotType::Green) {}
+
+	bool          GetProcessed()              const { return mProcessed; }
+	void          SetProcessed(bool processed)      { mProcessed = processed; }
+	Game::DotType GetDotType  ()              const { return mDotType; }
+	void          SetDotType(Game::DotType dotType) { mDotType = dotType; }
+
+private:
+	bool          mProcessed;
+	Game::DotType mDotType;
+};
+
+// *************************************************
+
+class RequireSpriteMessage : public GameMessage
+{
+public:
+	RequireSpriteMessage() : 
+		GameMessage (GM_Type::RequireSprite),
+		mProcessed  (false),
+		mSprite     (nullptr) {}
+
+	bool     GetProcessed()          const { return mProcessed; }
+	void     SetProcessed(bool processed)  { mProcessed = processed; }
+	ISprite* GetSprite   ()          const { return mSprite; }
+	void     SetSprite   (ISprite* sprite) { mSprite = sprite; }
+
+private:
+	bool     mProcessed;
+	ISprite* mSprite;
 };
 
 #endif

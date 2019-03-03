@@ -23,6 +23,8 @@ extern IFontManager       * g_pFontManager;
 extern bool  gQuit;
 extern float gMouseX;
 extern float gMouseY;
+extern int   gFinalScore;
+extern bool  gGameSuccess;
 
 const int SCR_WIDTH  = 1280;
 const int SCR_HEIGHT = 720;
@@ -31,8 +33,8 @@ const float FRAME_WIDTH  = 64;
 const float FRAME_HEIGHT = 64;
 const int   NUM_COLS     = 10;
 const int   NUM_ROWS     = 10;
-const int   GRID_POS_X   = 100;
-const int   GRID_POS_Y   = 50;
+const int   GRID_POS_X   = 320;
+const int   GRID_POS_Y   = 70;
 
 const std::string DATA_FOLDER = "data/";
 

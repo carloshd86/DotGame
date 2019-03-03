@@ -1,11 +1,11 @@
 #include "globals.h"
 #include "applicationmodegameover.h"
 #include "applicationmanager.h"
-#include "events.h"
-//#include "sys.h"
 #include "core.h"
-//#include "font.h"
+#include "events.h"
+#include "fontmanager.h"
 #include "asserts.h"
+#include "memorycontrol.h"
 
 const float ApplicationModeGameOver::TIME_TO_START_GAME = 5.f;
 
@@ -13,7 +13,8 @@ const float ApplicationModeGameOver::TIME_TO_START_GAME = 5.f;
 
 ApplicationModeGameOver::ApplicationModeGameOver () :
 	mMusicId     (0),
-	mTimeElapsed (0.f) {}
+	mTimeElapsed (0.f),
+	mRestingTime (static_cast<int>(TIME_TO_START_GAME)) {}
 
 // *************************************************
 
@@ -33,6 +34,7 @@ IdMode ApplicationModeGameOver::GetId()
 void ApplicationModeGameOver::Activate()
 {
 	GAME_ASSERT(g_pEventManager);
+	GAME_ASSERT(g_pFontManager);
 
 	m_pProperties = Properties::Instance("messages", g_pApplicationManager->GetLang());
 	GAME_ASSERT(m_pProperties);
@@ -40,11 +42,18 @@ void ApplicationModeGameOver::Activate()
 	g_pEventManager->Register(this, IEventManager::EM_Event::MouseClick);
 	g_pEventManager->Register(this, IEventManager::EM_Event::Quit);
 
-	g_pWindowManager->Init();
+	g_pWindowManager->InitWindow();
+	g_pWindowManager->SetBackgroundColor(0.f, 0.f, 0.f);
 
 	mTimeElapsed = 0.f;
+	mRestingTime = static_cast<int>(TIME_TO_START_GAME);
 
-	/*m_pSprite = g_pWindowManager->RequireSprite(Vec2(SCR_HEIGHT/4.f, 350.f), Vec2(400.f, 56.f), (DATA_FOLDER + "gameover.png").c_str(), false);*/
+	if (gGameSuccess) mTitleText = m_pProperties->GetProperty("game_over.win.text");
+	else              mTitleText = m_pProperties->GetProperty("game_over.title.text");
+	mScoreText = m_pProperties->GetProperty("game_over.final_score.text");
+	mScoreText.append(std::to_string(gFinalScore));
+	mStartText          = m_pProperties->GetProperty("game_over.click_start.text");
+	mAutomaticStartText = m_pProperties->GetProperty("game_over.time_start.text");
 
 	/*mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "DefenseLine.wav").c_str());
 	if (mMusicId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);*/
@@ -61,7 +70,7 @@ void ApplicationModeGameOver::Deactivate()
 
 	g_pEventManager->Unregister(this);
 	//g_pSoundManager->UnloadWav(mMusicId);
-	g_pWindowManager->End();
+	g_pWindowManager->EndWindow();
 }
 
 // *************************************************
@@ -78,8 +87,10 @@ void ApplicationModeGameOver::Run(float deltaTime)
 {
 	mTimeElapsed += deltaTime;
 	if (mTimeElapsed >= TIME_TO_START_GAME) 
-	{
 		StartLevel(Game::GameLevel::Level1);
+	else if (static_cast<int>(TIME_TO_START_GAME - mTimeElapsed) < mRestingTime - 1)
+	{
+		mRestingTime = static_cast<int>(TIME_TO_START_GAME - mTimeElapsed) + 1;
 	}
 }
 
@@ -88,12 +99,13 @@ void ApplicationModeGameOver::Run(float deltaTime)
 void ApplicationModeGameOver::Render()
 {
 	g_pWindowManager->Render();
-	/*glClearColor(0.f,0.f, 0.f, 1.f);
-	glClear( GL_COLOR_BUFFER_BIT );
+	g_pFontManager->DrawText(Vec2(100, 100), mTitleText.c_str());
+	g_pFontManager->DrawText(Vec2(100, 200), mScoreText.c_str());
 
-	glColor3f(1.f, 1.f, 1.f);
-	if (m_pSprite) g_pGraphicsEngine->RenderSprite(m_pSprite);
-	FONT_DrawString(vmake(20.f, 300.f), m_pProperties->GetProperty("game_over.press_enter.text").c_str());*/
+	g_pFontManager->DrawText(Vec2(100, 400), mStartText.c_str());
+	std::string timeMessage = mAutomaticStartText;
+	timeMessage.append(std::to_string(mRestingTime));
+	g_pFontManager->DrawText(Vec2(100, 500), timeMessage.c_str());
 }
 
 // *************************************************

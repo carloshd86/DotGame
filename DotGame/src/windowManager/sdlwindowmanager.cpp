@@ -21,8 +21,6 @@ SdlWindowManager * SdlWindowManager::mInstance = nullptr;
 
 SdlWindowManager::SdlWindowManager() : 
 	mWindowSurface   (nullptr),
-	mBackgroundImage (""),
-	mBackground      (nullptr),
 	mBackgroundR     (0.f),
 	mBackgroundG     (0.f),
 	mBackgroundB     (0.f),
@@ -56,8 +54,6 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 {
 	if (!mInitialized)
 	{
-		if (!mBackgroundImage.empty()) LoadBackgroundImage();
-
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			std::cout << "could not initialize SDL" << std::endl;
 			SDL_Quit();
@@ -75,7 +71,6 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-		/* Create our window centered at 512x512 resolution */
 		mWindow.pWindow = SDL_CreateWindow("Dot Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (!mSdlWindow) {
 			std::cout << "Unable to create window" << std::endl;
@@ -87,7 +82,6 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 		SDL_FillRect(mWindowSurface, NULL, SDL_MapRGB(mWindowSurface->format,static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255)));
 		SDL_UpdateWindowSurface(mSdlWindow);
 
-		/* Create our opengl context and attach it to our window */
 		mContext.pContext = SDL_GL_CreateContext(mSdlWindow);
 
 		mRenderer.pRenderer = SDL_CreateRenderer(mSdlWindow, -1, 0);
@@ -97,9 +91,6 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 		{
 			printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 		}
-
-		/* This makes our buffer swap syncronized with the monitor's vertical refresh */
-		SDL_GL_SetSwapInterval(1);
 
 		mInitialized = true;
 	}
@@ -113,13 +104,8 @@ IWindowManager::GE_Err SdlWindowManager::End()
 {
 	if (mInitialized)
 	{
-		for(auto sprite : mSprites) GAME_DELETE(sprite.first);
-		mSprites.clear();
+		EndWindow();
 
-		for (auto& texture : mTextures) SDL_DestroyTexture(texture.second);
-		mTextures.clear();
-
-		/* Delete our opengl context, destroy our window, and shutdown SDL */
 		IMG_Quit();
 		SDL_DestroyRenderer(mSdlRenderer);
 		SDL_GL_DeleteContext(mSdlContext);
@@ -138,29 +124,47 @@ IWindowManager::GE_Err SdlWindowManager::End()
 
 // *************************************************
 
+IWindowManager::GE_Err SdlWindowManager::InitWindow()
+{
+	return GE_Err::OK;
+}
+
+// *************************************************
+
+IWindowManager::GE_Err SdlWindowManager::EndWindow()
+{
+	for (auto priorities : mSprites)
+	{
+		for (auto& sprite : priorities.second) GAME_DELETE(sprite.first);
+	}
+	mSprites.clear();
+
+	for (auto& texture : mTextures) SDL_DestroyTexture(texture.second);
+	mTextures.clear();
+
+	return GE_Err::OK;
+}
+
+// *************************************************
+
 void SdlWindowManager::Render()
 {
 	SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255), 255);
 	SDL_RenderClear(mSdlRenderer);
 
-	// Render background
-	if (mBackground)
-	{
-		for (int i = 0; i <= SCR_WIDTH / GAME_BACKGROUND_WIDTH; i++)
-			for (int j = 0; j <= SCR_HEIGHT / GAME_BACKGROUND_HEIGHT; j++)
-				RenderTexture(Vec2(i * GAME_BACKGROUND_WIDTH + 64.f, j * GAME_BACKGROUND_HEIGHT + 64.f), Vec2(GAME_BACKGROUND_WIDTH, GAME_BACKGROUND_HEIGHT), mBackground);
-	}
-
 	// Render elements
-	for(auto spritePair : mSprites)
+	for (auto priorities : mSprites)
 	{
-		if (spritePair.second)
+		for (auto& spritePair : priorities.second)
 		{
-			ISprite * sprite = spritePair.first;
-			if (sprite->GetVisible())
+			if (spritePair.second)
 			{
-				SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(sprite->GetRed() * 255), static_cast<uint8_t>(sprite->GetGreen() * 255), static_cast<uint8_t>(sprite->GetBlue() * 255), 255);
-				RenderSprite(sprite);
+				ISprite * sprite = spritePair.first;
+				if (sprite->GetVisible())
+				{
+					SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(sprite->GetRed() * 255), static_cast<uint8_t>(sprite->GetGreen() * 255), static_cast<uint8_t>(sprite->GetBlue() * 255), 255);
+					RenderSprite(sprite);
+				}
 			}
 		}
 	}
@@ -182,7 +186,7 @@ void SdlWindowManager::ClearColorBuffer(float r, float g, float b) {
 
 // *************************************************
 
-ISprite * SdlWindowManager::RequireSprite(Vec2 pos, Vec2 size, const char * image, bool manageRender, float r, float g, float b)
+ISprite * SdlWindowManager::RequireSprite(Vec2 pos, Vec2 size, const char * image, int priority, bool manageRender, float r, float g, float b)
 {
 	SDL_Texture* spriteId = nullptr;
 	for (auto& texture : mTextures) 
@@ -217,7 +221,7 @@ ISprite * SdlWindowManager::RequireSprite(Vec2 pos, Vec2 size, const char * imag
 	}
 
 	ISprite * requiredSprite = GAME_NEW(SdlSprite, (pos, size, spriteId, r, g, b));
-	mSprites.push_back(std::pair<ISprite *, bool>(requiredSprite, manageRender));
+	mSprites[priority].push_back(std::pair<ISprite *, bool>(requiredSprite, manageRender));
 
 	return requiredSprite;
 }
@@ -226,16 +230,19 @@ ISprite * SdlWindowManager::RequireSprite(Vec2 pos, Vec2 size, const char * imag
 
 void SdlWindowManager::ReleaseSprite(ISprite * sprite) 
 {
-	for (auto it = mSprites.begin(); it != mSprites.end(); ) 
+	for (auto mapIt = mSprites.begin(); mapIt != mSprites.end(); mapIt++) 
 	{
-		if ((*it).first == sprite) 
+		for (auto it = (*mapIt).second.begin(); it != (*mapIt).second.end(); )
 		{
-			GAME_DELETE((*it).first);  
-			it = mSprites.erase(it);
-		} 
-		else 
-		{
-			++it;
+			if ((*it).first == sprite)
+			{
+				GAME_DELETE((*it).first);
+				it = (*mapIt).second.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 }
@@ -256,15 +263,6 @@ void SdlWindowManager::RenderTexture(Vec2 pos, Vec2 size, SDL_Texture* texture)
 		SDL_Rect rcDest = { static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y) };
 		SDL_RenderCopy(mSdlRenderer, texture, nullptr, &rcDest);
 	}
-}
-
-// *************************************************
-
-void SdlWindowManager::SetBackgroundImage(const char * backgroundImage) 
-{
-	if(mBackground) SDL_DestroyTexture(mBackground);
-	mBackgroundImage = backgroundImage;
-	LoadBackgroundImage();
 }
 
 // *************************************************
@@ -316,24 +314,4 @@ void SdlWindowManager::DrawLine(float x1, float y1, float x2, float y2)
 {
 	SDL_RenderDrawLine(mSdlRenderer, static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2));
 	SDL_RenderPresent(mSdlRenderer);
-}
-
-// *************************************************
-
-void SdlWindowManager::LoadBackgroundImage()
-{
-	SDL_Surface* surface = IMG_Load((DATA_FOLDER + mBackgroundImage).c_str());
-	if (!surface)
-	{
-		printf( "Couldn't load image! SDL_image Error: %s\n", IMG_GetError() );
-	}
-	else
-	{
-		mBackground = SDL_CreateTextureFromSurface(mSdlRenderer, surface);
-		if(!mBackground)
-		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", mBackgroundImage.c_str(), SDL_GetError());
-		}
-		SDL_FreeSurface(surface);
-	}
 }

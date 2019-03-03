@@ -4,16 +4,10 @@
 #include "component.h"
 #include "eventmanager.h"
 
-class CDot : public Component, public IEventManager::IListener
+class CDot : public Component, public IEventManager::IListener, public IMessageReceiver
 {
 public:
-	enum DotType
-	{
-		Green,
-		Red
-	};
-
-	CDot(Entity* owner, DotType type, int tile);
+	CDot(Entity* owner, Game::DotType type, int tile);
 
 	virtual ~CDot();
 
@@ -22,15 +16,25 @@ public:
 
 	void Run(float deltaTime);
 
-	DotType GetType() const;
-	void SetType(DotType type);
-	int GetTile() const;
-	void SetTile(int tile);
+	Game::DotType GetType() const;
+	void          SetType(Game::DotType type);
+	int           GetTile() const;
+	void          SetTile(int tile);
+
+	void CheckInteractAction(const Event& event);
+	bool IsPositionOverDot(Vec2 pos) const;
+
+	bool ProcessEvent(const Event& event);
+	void ReceiveMessage(GameMessage &message);
 
 private:
-	bool    mInitialized;
-	DotType mType;
-	int     mTile;
+	bool               mInitialized;
+	Game::DotType      mType;
+	int                mTile;
+	MessageCallbackMap mMessageCallbacks;
+
+	void OnRequireDotType(GameMessage& message);
+	void OnRequireTile   (GameMessage& message);
 };
 
 
