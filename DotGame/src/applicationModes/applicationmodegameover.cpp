@@ -140,7 +140,10 @@ bool ApplicationModeGameOver::ProcessEvent(const Event& event)
 
 void ApplicationModeGameOver::StartLevel(Game::GameLevel level)
 {
-	g_pSoundManager->PlaySound(gStartSoundId);
+	if (g_pSoundManager)
+	{
+		g_pSoundManager->PlaySound(gStartSoundId);
+	}
 	g_gameLevel = level;
 	g_pApplicationManager->SwitchMode(AM_Game);
 }

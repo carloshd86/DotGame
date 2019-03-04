@@ -63,8 +63,11 @@ void ApplicationModeGame::Activate()
 		}
 	}
 
-	mMusicId     = g_pSoundManager->LoadMusic("ArcadeFunk.ogg");
-	if (mMusicId.pId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);
+	if (g_pSoundManager)
+	{
+		mMusicId = g_pSoundManager->LoadMusic("ArcadeFunk.ogg");
+		if (mMusicId.pId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);
+	}
 }
 
 // *************************************************
@@ -80,8 +83,11 @@ void ApplicationModeGame::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	g_pSoundManager->StopMusic();
-	g_pSoundManager->UnloadMusic();
+	if (g_pSoundManager)
+	{
+		g_pSoundManager->StopMusic();
+		g_pSoundManager->UnloadMusic();
+	}
 	g_pWindowManager->EndWindow();
 	g_pGame->Unregister(this);
 	g_pGame->End();

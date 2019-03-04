@@ -1,10 +1,8 @@
 #ifndef __APPLICATION_MANAGER_H__
 #define __APPLICATION_MANAGER_H__
 
-
 #include "applicationmode.h"
 #include "properties.h"
-
 
 class ApplicationManager
 {

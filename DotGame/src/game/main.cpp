@@ -9,13 +9,14 @@
 #include "memorycontrol.h"
 #include <SDL.h>
 
-ApplicationManager  *  g_pApplicationManager;
-Game                *  g_pGame;
+ApplicationManager  *  g_pApplicationManager = nullptr;
+Game                *  g_pGame               = nullptr;
 Game::GameLevel        g_gameLevel;
-IWindowManager      *  g_pWindowManager;
-ISoundManager       *  g_pSoundManager;
-IEventManager       *  g_pEventManager;
-IFontManager        *  g_pFontManager;
+IWindowManager      *  g_pWindowManager      = nullptr;
+ISoundManager       *  g_pSoundManager       = nullptr;
+IEventManager       *  g_pEventManager       = nullptr;
+IFontManager        *  g_pFontManager        = nullptr;
+
 bool                   gQuit        = false;
 float                  gMouseX      = 0.f;
 float                  gMouseY      = 0.f;
@@ -44,12 +45,12 @@ int main(int argc, char *argv[])
 	g_pFontManager->LoadFont("Lato-Regular.ttf", 30);
 
 	g_pSoundManager = SdlSoundManager::Instance();
-	GAME_ASSERT(g_pSoundManager);
-	GAME_ASSERT(g_pSoundManager->Init());
-
-	gFailSoundId  = g_pSoundManager->LoadSound("fail.wav");
-	gHitSoundId   = g_pSoundManager->LoadSound("hit.wav");
-	gStartSoundId = g_pSoundManager->LoadSound("start.ogg");
+	if (g_pSoundManager && g_pSoundManager->Init())
+	{
+		gFailSoundId  = g_pSoundManager->LoadSound("fail.wav");
+		gHitSoundId   = g_pSoundManager->LoadSound("hit.wav");
+		gStartSoundId = g_pSoundManager->LoadSound("start.ogg");
+	}
 
 	float deltaTime = 0.f;
 	Uint32 lastMilliseconds = 0;

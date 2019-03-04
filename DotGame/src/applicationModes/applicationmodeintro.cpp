@@ -65,7 +65,10 @@ void ApplicationModeIntro::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	g_pSoundManager->UnloadMusic();
+	if (g_pSoundManager)
+	{
+		g_pSoundManager->UnloadMusic();
+	}
 	g_pWindowManager->EndWindow();
 }
 
@@ -134,7 +137,10 @@ bool ApplicationModeIntro::ProcessEvent(const Event& event)
 
 void ApplicationModeIntro::StartLevel(Game::GameLevel level)
 {
-	g_pSoundManager->PlaySound(gStartSoundId);
+	if (g_pSoundManager)
+	{
+		g_pSoundManager->PlaySound(gStartSoundId);
+	}
 	g_gameLevel = level;
 	g_pApplicationManager->SwitchMode(AM_Game);
 }

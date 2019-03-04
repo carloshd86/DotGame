@@ -60,14 +60,9 @@ IWindowManager::GE_Err SdlWindowManager::Init()
 			return GE_Err::KO;
 		}
 
-		/* Request opengl 3.2 context.
-		* SDL doesn't have the ability to choose which profile at this time of writing,
-		* but it should default to the core profile */
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
-		/* Turn on double buffering with a 24bit Z buffer.
-		* You may need to change this to 16 or 32 for your system */
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
@@ -149,9 +144,6 @@ IWindowManager::GE_Err SdlWindowManager::EndWindow()
 
 void SdlWindowManager::Render()
 {
-	/*SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255), 255);
-	SDL_RenderClear(mSdlRenderer);*/
-
 	// Render elements
 	for (auto priorities : mSprites)
 	{
@@ -168,7 +160,6 @@ void SdlWindowManager::Render()
 			}
 		}
 	}
-	//SDL_RenderPresent(mSdlRenderer);
 }
 
 // *************************************************
@@ -189,8 +180,6 @@ void SdlWindowManager::ClearColorBuffer(float r, float g, float b) {
 void SdlWindowManager::RefreshRendering() {
 	SDL_RenderPresent(mSdlRenderer);
 }
-
-// *************************************************
 
 // *************************************************
 
@@ -321,5 +310,4 @@ void SdlWindowManager::SetColor(float r, float g, float b, float a)
 void SdlWindowManager::DrawLine(float x1, float y1, float x2, float y2)
 {
 	SDL_RenderDrawLine(mSdlRenderer, static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2));
-	//SDL_RenderPresent(mSdlRenderer);
 }
