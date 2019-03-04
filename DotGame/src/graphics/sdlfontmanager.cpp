@@ -154,7 +154,7 @@ void SdlFontManager::DrawText(Vec2 pos, Vec2 size, const char * text)
 					SDL_QueryTexture(mFontTexture, NULL, NULL, &rcDest.w, &rcDest.h);
 				}
 				SDL_RenderCopy(mRenderer, mFontTexture, nullptr, &rcDest);
-				SDL_RenderPresent(mRenderer);
+				//SDL_RenderPresent(mRenderer);
 
 				SDL_DestroyTexture(mFontTexture);
 				mFontTexture = nullptr;

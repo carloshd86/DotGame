@@ -12,9 +12,11 @@ const float ApplicationModeIntro::TIME_TO_START_GAME = 5.f;
 // *************************************************
 
 ApplicationModeIntro::ApplicationModeIntro() :
-	mMusicId     (0),
     mTimeElapsed (0.f),
-	mRestingTime (static_cast<int>(TIME_TO_START_GAME)) {}
+	mRestingTime (static_cast<int>(TIME_TO_START_GAME))
+{
+	mMusicId.pId      = nullptr;
+}
 
 // *************************************************
 
@@ -51,9 +53,6 @@ void ApplicationModeIntro::Activate()
 	mTitleText          = m_pProperties->GetProperty("intro.title.text");
 	mStartText          = m_pProperties->GetProperty("intro.click_start.text");
 	mAutomaticStartText = m_pProperties->GetProperty("intro.time_start.text");
-
-	/*mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "Superboy.wav").c_str());
-	if (mMusicId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);*/
 }
 
 // *************************************************
@@ -66,7 +65,7 @@ void ApplicationModeIntro::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	//g_pSoundManager->UnloadWav(mMusicId);
+	g_pSoundManager->UnloadMusic();
 	g_pWindowManager->EndWindow();
 }
 
@@ -94,12 +93,16 @@ void ApplicationModeIntro::Run(float deltaTime)
 
 void ApplicationModeIntro::Render()
 {
+	g_pWindowManager->ClearColorBuffer(0.f, 0.f, 0.f);
 	g_pWindowManager->Render();
+
 	g_pFontManager->DrawText(Vec2(100, 100), mTitleText.c_str());
 	g_pFontManager->DrawText(Vec2(100, 200), mStartText.c_str());
 	std::string timeMessage = mAutomaticStartText;
 	timeMessage.append(std::to_string(mRestingTime));
 	g_pFontManager->DrawText(Vec2(100, 300), timeMessage.c_str());
+
+	g_pWindowManager->RefreshRendering();
 }
 
 // *************************************************
@@ -131,6 +134,7 @@ bool ApplicationModeIntro::ProcessEvent(const Event& event)
 
 void ApplicationModeIntro::StartLevel(Game::GameLevel level)
 {
+	g_pSoundManager->PlaySound(gStartSoundId);
 	g_gameLevel = level;
 	g_pApplicationManager->SwitchMode(AM_Game);
 }

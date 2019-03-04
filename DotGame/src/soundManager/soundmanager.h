@@ -6,14 +6,25 @@ class ISoundManager
 {
 
 public:
+	enum SM_Err  {
+		KO = 0,
+		OK = 1
+	};
 
-	virtual bool         InitSound ()                                            = 0;
-	virtual void         EndSound  ()                                            = 0;
-	virtual unsigned int LoadWav   (const char filename[])                       = 0;
-	virtual void         PlaySound (unsigned int snd, float volume, float pitch) = 0;
-	virtual void         UnloadWav (unsigned int snd)                            = 0;
-	virtual void         PlayMusic (unsigned int snd, float volume = 1.f)        = 0;
-	virtual void         StopMusic ()                                            = 0;
+	class SoundId {
+	public:
+		void * pId;
+	};
+
+	virtual SM_Err  Init        ()                            = 0;
+	virtual SM_Err  End         ()                            = 0;
+	virtual SoundId LoadSound   (const char* filename)        = 0;
+	virtual SoundId LoadMusic   (const char* filename)        = 0;
+	virtual void    PlaySound   (SoundId snd, int loops = 0)  = 0;
+	virtual void    UnloadSound (SoundId snd)                 = 0;
+	virtual void    UnloadMusic ()                            = 0;
+	virtual void    PlayMusic   (SoundId snd, int loops = -1) = 0;
+	virtual void    StopMusic   ()                            = 0;
 };
 
 #endif

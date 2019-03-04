@@ -3,6 +3,7 @@
 
 #include "applicationmode.h"
 #include "game.h"
+#include "soundmanager.h"
 
 class ApplicationModeGame : public ApplicationMode, public IEventManager::IListener, public Game::IScoreListener
 {
@@ -21,11 +22,11 @@ public:
 	bool ScoreAdd    (Game::DotType dotType);
 
 private:
-	Properties*                m_pProperties;
-	uint32_t                   mMusicId;
-	std::map<int, ISprite*>    mTilesMap;
-	int32_t                    mLastTileIndexHover;
-	std::vector<ISprite*>      mScoreSprites;
+	Properties*             m_pProperties;
+	ISoundManager::SoundId  mMusicId;
+	std::map<int, ISprite*> mTilesMap;
+	int32_t                 mLastTileIndexHover;
+	std::vector<ISprite*>   mScoreSprites;
 
 	void CheckTileMouseHover(Vec2 pos);
 	void QuitGame();

@@ -9,10 +9,12 @@
 #include "memorycontrol.h"
 
 
-ApplicationModeGame::ApplicationModeGame () :
-	mMusicId(0),
+ApplicationModeGame::ApplicationModeGame() :
 	m_pProperties(nullptr),
-	mLastTileIndexHover(-1) {}
+	mLastTileIndexHover(-1)
+{
+	mMusicId.pId     = nullptr;
+}
 
 // *************************************************
 
@@ -61,7 +63,8 @@ void ApplicationModeGame::Activate()
 		}
 	}
 
-	//mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "ArcadeFunk.wav").c_str());
+	mMusicId     = g_pSoundManager->LoadMusic("ArcadeFunk.ogg");
+	if (mMusicId.pId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);
 }
 
 // *************************************************
@@ -77,7 +80,8 @@ void ApplicationModeGame::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	//g_pSoundManager->UnloadWav(mMusicId);
+	g_pSoundManager->StopMusic();
+	g_pSoundManager->UnloadMusic();
 	g_pWindowManager->EndWindow();
 	g_pGame->Unregister(this);
 	g_pGame->End();
@@ -102,7 +106,7 @@ void ApplicationModeGame::Run(float deltaTime)
 
 void ApplicationModeGame::Render()
 {
-	g_pWindowManager->SetColor(1.f, 1.f, 1.f, 1.f);
+	g_pWindowManager->ClearColorBuffer(1.f, 1.f, 1.f);
 	g_pWindowManager->Render();
 
 	g_pWindowManager->SetColor(0.f, 0.f, 0.f, 1.f);
@@ -117,6 +121,8 @@ void ApplicationModeGame::Render()
 		float newX = static_cast<float>(GRID_POS_X + FRAME_WIDTH * i);
 		g_pWindowManager->DrawLine(newX, static_cast<float>(GRID_POS_Y), newX, static_cast<float>(GRID_POS_Y + FRAME_HEIGHT * NUM_ROWS));
 	}
+
+	g_pWindowManager->RefreshRendering();
 }
 
 // *************************************************

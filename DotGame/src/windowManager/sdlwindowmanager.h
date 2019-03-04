@@ -27,6 +27,7 @@ public:
 	void      Render             ();
 	void      SwapBuffers        ();
 	void      ClearColorBuffer   (float r, float g, float b);
+	void      RefreshRendering   ();
 	ISprite * RequireSprite      (Vec2 pos, Vec2 size, const char * image, int priority = 1, bool manageRender = true, float r = 1.f, float g = 1.f, float b = 1.f);
 	void      ReleaseSprite      (ISprite * sprite);
 	void      RenderSprite       (ISprite * sprite);

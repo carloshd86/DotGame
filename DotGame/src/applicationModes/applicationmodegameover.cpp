@@ -12,9 +12,11 @@ const float ApplicationModeGameOver::TIME_TO_START_GAME = 5.f;
 // *************************************************
 
 ApplicationModeGameOver::ApplicationModeGameOver () :
-	mMusicId     (0),
 	mTimeElapsed (0.f),
-	mRestingTime (static_cast<int>(TIME_TO_START_GAME)) {}
+	mRestingTime (static_cast<int>(TIME_TO_START_GAME))
+{
+	mMusicId.pId      = nullptr;
+}
 
 // *************************************************
 
@@ -50,13 +52,10 @@ void ApplicationModeGameOver::Activate()
 
 	if (gGameSuccess) mTitleText = m_pProperties->GetProperty("game_over.win.text");
 	else              mTitleText = m_pProperties->GetProperty("game_over.title.text");
-	mScoreText = m_pProperties->GetProperty("game_over.final_score.text");
+	mScoreText                   = m_pProperties->GetProperty("game_over.final_score.text");
 	mScoreText.append(std::to_string(gFinalScore));
-	mStartText          = m_pProperties->GetProperty("game_over.click_start.text");
-	mAutomaticStartText = m_pProperties->GetProperty("game_over.time_start.text");
-
-	/*mMusicId = g_pSoundManager->LoadWav((DATA_FOLDER + "DefenseLine.wav").c_str());
-	if (mMusicId && g_pApplicationManager->IsAudioActivated()) g_pSoundManager->PlayMusic(mMusicId);*/
+	mStartText                   = m_pProperties->GetProperty("game_over.click_start.text");
+	mAutomaticStartText          = m_pProperties->GetProperty("game_over.time_start.text");
 }
 
 // *************************************************
@@ -69,7 +68,7 @@ void ApplicationModeGameOver::Deactivate()
 	m_pProperties = nullptr;
 
 	g_pEventManager->Unregister(this);
-	//g_pSoundManager->UnloadWav(mMusicId);
+	g_pSoundManager->UnloadMusic();
 	g_pWindowManager->EndWindow();
 }
 
@@ -98,7 +97,9 @@ void ApplicationModeGameOver::Run(float deltaTime)
 
 void ApplicationModeGameOver::Render()
 {
+	g_pWindowManager->ClearColorBuffer(0.f, 0.f, 0.f);
 	g_pWindowManager->Render();
+
 	g_pFontManager->DrawText(Vec2(100, 100), mTitleText.c_str());
 	g_pFontManager->DrawText(Vec2(100, 200), mScoreText.c_str());
 
@@ -106,6 +107,8 @@ void ApplicationModeGameOver::Render()
 	std::string timeMessage = mAutomaticStartText;
 	timeMessage.append(std::to_string(mRestingTime));
 	g_pFontManager->DrawText(Vec2(100, 500), timeMessage.c_str());
+
+	g_pWindowManager->RefreshRendering();
 }
 
 // *************************************************
@@ -137,6 +140,7 @@ bool ApplicationModeGameOver::ProcessEvent(const Event& event)
 
 void ApplicationModeGameOver::StartLevel(Game::GameLevel level)
 {
+	g_pSoundManager->PlaySound(gStartSoundId);
 	g_gameLevel = level;
 	g_pApplicationManager->SwitchMode(AM_Game);
 }

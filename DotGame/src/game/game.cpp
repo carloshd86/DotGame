@@ -12,8 +12,8 @@
 #include "componentdot.h"
 #include <ctime>
 
-const int    Game::MAX_DOTS                     = 5;
-const int    Game::SECONDS_SPAWN_DOT            = 2;
+const int    Game::MAX_DOTS                     = 8;
+const int    Game::SECONDS_SPAWN_DOT            = 1;
 const size_t Game::SCORE_WIN                    = 10;
 const int    Game::MIN_SECONDS_CHANGE_PHASE_DOT = 1;
 const int    Game::MAX_SECONDS_CHANGE_PHASE_DOT = 5;

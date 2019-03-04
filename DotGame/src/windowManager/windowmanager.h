@@ -34,6 +34,7 @@ public:
 	virtual void      Render             ()                                                                                                                                 = 0;
 	virtual void      SwapBuffers        ()                                                                                                                                 = 0;
 	virtual void      ClearColorBuffer   (float r, float g, float b)                                                                                                        = 0;
+	virtual void      RefreshRendering   ()                                                                                                                                 = 0;
 	virtual ISprite*  RequireSprite      (Vec2 pos, Vec2 size, const char * image, int priority = 1, bool manageRender = true, float r = 1.f, float g = 1.f, float b = 1.f) = 0;
 	virtual void      ReleaseSprite      (ISprite * sprite)                                                                                                                 = 0;
 	virtual void      RenderSprite       (ISprite * sprite)                                                                                                                 = 0;

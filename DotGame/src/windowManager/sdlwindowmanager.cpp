@@ -149,8 +149,8 @@ IWindowManager::GE_Err SdlWindowManager::EndWindow()
 
 void SdlWindowManager::Render()
 {
-	SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255), 255);
-	SDL_RenderClear(mSdlRenderer);
+	/*SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(mBackgroundR * 255), static_cast<uint8_t>(mBackgroundG * 255), static_cast<uint8_t>(mBackgroundB * 255), 255);
+	SDL_RenderClear(mSdlRenderer);*/
 
 	// Render elements
 	for (auto priorities : mSprites)
@@ -168,7 +168,7 @@ void SdlWindowManager::Render()
 			}
 		}
 	}
-	SDL_RenderPresent(mSdlRenderer);
+	//SDL_RenderPresent(mSdlRenderer);
 }
 
 // *************************************************
@@ -183,6 +183,14 @@ void SdlWindowManager::ClearColorBuffer(float r, float g, float b) {
 	SDL_SetRenderDrawColor(mSdlRenderer, static_cast<uint8_t>(r * 255), static_cast<uint8_t>(g * 255), static_cast<uint8_t>(b * 255), 255);
 	SDL_RenderClear(mSdlRenderer);
 }
+
+// *************************************************
+
+void SdlWindowManager::RefreshRendering() {
+	SDL_RenderPresent(mSdlRenderer);
+}
+
+// *************************************************
 
 // *************************************************
 
@@ -313,5 +321,5 @@ void SdlWindowManager::SetColor(float r, float g, float b, float a)
 void SdlWindowManager::DrawLine(float x1, float y1, float x2, float y2)
 {
 	SDL_RenderDrawLine(mSdlRenderer, static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2));
-	SDL_RenderPresent(mSdlRenderer);
+	//SDL_RenderPresent(mSdlRenderer);
 }

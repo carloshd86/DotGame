@@ -120,13 +120,13 @@ void CDot::CheckInteractAction(const Event& event)
 		{
 			if (EventMouseClick::EMouseButton::Left == eMouseClick->GetMouseButton())
 			{
-				if (Game::DotType::Green == mType) g_pGame->IncreaseScore(mOwner);
-				else                               g_pGame->SetGameOver(Game::GameResult::Fail);
+				if (Game::DotType::Green == mType) { g_pSoundManager->PlaySound(gHitSoundId);  g_pGame->IncreaseScore(mOwner);			     }
+				else                               { g_pSoundManager->PlaySound(gFailSoundId); g_pGame->SetGameOver(Game::GameResult::Fail); }
 			}
 			else if (EventMouseClick::EMouseButton::Right == eMouseClick->GetMouseButton())
 			{
-				if (Game::DotType::Red == mType) g_pGame->IncreaseScore(mOwner);
-				else                             g_pGame->SetGameOver(Game::GameResult::Fail);
+				if (Game::DotType::Red == mType) { g_pSoundManager->PlaySound(gHitSoundId);  g_pGame->IncreaseScore(mOwner);			   }
+				else                             { g_pSoundManager->PlaySound(gFailSoundId); g_pGame->SetGameOver(Game::GameResult::Fail); }
 			}
 		}
 	}

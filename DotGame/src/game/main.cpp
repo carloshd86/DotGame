@@ -4,23 +4,27 @@
 #include "sdlwindowmanager.h"
 #include "sdlinputmanager.h"
 #include "sdlfontmanager.h"
-//#include "swalibsoundmanager.h"
+#include "sdlsoundmanager.h"
 #include "asserts.h"
 #include "memorycontrol.h"
 #include <SDL.h>
 
-ApplicationManager * g_pApplicationManager;
-Game               * g_pGame;
-Game::GameLevel      g_gameLevel;
-IWindowManager     * g_pWindowManager;
-ISoundManager      * g_pSoundManager;
-IEventManager      * g_pEventManager;
-IFontManager       * g_pFontManager;
-bool                 gQuit        = false;
-float                gMouseX      = 0.f;
-float                gMouseY      = 0.f;
-int                  gFinalScore  = 0;
-bool                 gGameSuccess = false;
+ApplicationManager  *  g_pApplicationManager;
+Game                *  g_pGame;
+Game::GameLevel        g_gameLevel;
+IWindowManager      *  g_pWindowManager;
+ISoundManager       *  g_pSoundManager;
+IEventManager       *  g_pEventManager;
+IFontManager        *  g_pFontManager;
+bool                   gQuit        = false;
+float                  gMouseX      = 0.f;
+float                  gMouseY      = 0.f;
+int                    gFinalScore  = 0;
+bool                   gGameSuccess = false;
+ISoundManager::SoundId gFailSoundId;
+ISoundManager::SoundId gHitSoundId;
+ISoundManager::SoundId gStartSoundId;
+
 
 int main(int argc, char *argv[])
 {
@@ -39,8 +43,13 @@ int main(int argc, char *argv[])
 	GAME_ASSERT(g_pFontManager->Init());
 	g_pFontManager->LoadFont("Lato-Regular.ttf", 30);
 
-	/*g_pSoundManager = GAME_NEW(SwalibSoundManager, ());
-	g_pSoundManager->InitSound();*/
+	g_pSoundManager = SdlSoundManager::Instance();
+	GAME_ASSERT(g_pSoundManager);
+	GAME_ASSERT(g_pSoundManager->Init());
+
+	gFailSoundId  = g_pSoundManager->LoadSound("fail.wav");
+	gHitSoundId   = g_pSoundManager->LoadSound("hit.wav");
+	gStartSoundId = g_pSoundManager->LoadSound("start.ogg");
 
 	float deltaTime = 0.f;
 	Uint32 lastMilliseconds = 0;
@@ -65,8 +74,6 @@ int main(int argc, char *argv[])
 		SDL_Delay(17);
 		g_pWindowManager->PumpEvents();
 	}
-
-	//g_pSoundManager->EndSound();
 
 	GAME_DELETE(g_pGame);
 	GAME_DELETE(g_pSoundManager);
