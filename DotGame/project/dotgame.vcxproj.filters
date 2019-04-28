@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="game">
+      <UniqueIdentifier>{42818b77-140e-4ea8-9eaa-c24bec1b7970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="globals">
+      <UniqueIdentifier>{2fe65e9e-13dc-477c-b279-d719f922f40a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="eventManager">
+      <UniqueIdentifier>{c99b574e-edc2-4556-905e-8e871fb0504b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="applicationManager">
+      <UniqueIdentifier>{1f3ef4e7-e255-483a-84b5-b528a90b42bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="applicationModes">
+      <UniqueIdentifier>{e0595bc5-cc05-4c57-9663-94721a9ed2f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{932cf74a-071b-4169-aa19-a1255ee03916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="properties">
+      <UniqueIdentifier>{e5d28a38-b709-4b8f-9313-7cb5681ca38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entities">
+      <UniqueIdentifier>{026aa70b-aae3-4607-a73b-1f3786871038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="components">
+      <UniqueIdentifier>{03e797bd-75d5-4cdc-bfd3-a44bd9a1558a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="messages">
+      <UniqueIdentifier>{623f6d52-c694-4737-a650-990a3391e55b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="windowManager">
+      <UniqueIdentifier>{fba43c6d-f6ea-4bf9-8110-943da296d5de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{0026df2e-bdee-4a96-b63e-72e4a3705d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soundManager">
+      <UniqueIdentifier>{3a80b35c-c81b-4ff9-abea-29693576fbc6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\game\main.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\game.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\properties\properties.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\entities\entity.cpp">
+      <Filter>entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\applicationManager\applicationmanager.cpp">
+      <Filter>applicationManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\windowManager\sdlwindowmanager.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\graphics\sdlsprite.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp">
+      <Filter>eventManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\applicationModes\applicationmodegame.cpp">
+      <Filter>applicationModes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\applicationModes\applicationmodegameover.cpp">
+      <Filter>applicationModes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\applicationModes\applicationmodeintro.cpp">
+      <Filter>applicationModes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\graphics\sdlfontmanager.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\componentrenderable.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\componentdot.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\soundManager\sdlsoundmanager.cpp">
+      <Filter>soundManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\globals\asserts.h">
+      <Filter>globals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\globals\globals.h">
+      <Filter>globals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\globals\memorycontrol.h">
+      <Filter>globals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\game.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\eventManager\eventmanager.h">
+      <Filter>eventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\core.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationManager\applicationmanager.h">
+      <Filter>applicationManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\soundManager\soundmanager.h">
+      <Filter>soundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\properties\properties.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmode.h">
+      <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\entities\entity.h">
+      <Filter>entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\messages\messagereceiver.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\messages\messages.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\component.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\windowManager\sdlwindowmanager.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\windowManager\windowmanager.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\sdlsprite.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\sprite.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\eventManager\sdlinputmanager.h">
+      <Filter>eventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\eventManager\events.h">
+      <Filter>eventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmodegame.h">
+      <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmodegameover.h">
+      <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\applicationModes\applicationmodeintro.h">
+      <Filter>applicationModes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\fontmanager.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\sdlfontmanager.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\componentdot.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\componentrenderable.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\soundManager\sdlsoundmanager.h">
+      <Filter>soundManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\applicationManager\applicationmanager.cpp" />
+    <ClCompile Include="..\src\applicationModes\applicationmodegame.cpp" />
+    <ClCompile Include="..\src\applicationModes\applicationmodegameover.cpp" />
+    <ClCompile Include="..\src\applicationModes\applicationmodeintro.cpp" />
+    <ClCompile Include="..\src\components\componentdot.cpp" />
+    <ClCompile Include="..\src\components\componentrenderable.cpp" />
+    <ClCompile Include="..\src\entities\entity.cpp" />
+    <ClCompile Include="..\src\eventManager\sdlinputmanager.cpp" />
+    <ClCompile Include="..\src\game\game.cpp" />
+    <ClCompile Include="..\src\game\main.cpp" />
+    <ClCompile Include="..\src\graphics\sdlfontmanager.cpp" />
+    <ClCompile Include="..\src\graphics\sdlsprite.cpp" />
+    <ClCompile Include="..\src\properties\properties.cpp" />
+    <ClCompile Include="..\src\soundManager\sdlsoundmanager.cpp" />
+    <ClCompile Include="..\src\windowManager\sdlwindowmanager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\applicationManager\applicationmanager.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmode.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmodegame.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmodegameover.h" />
+    <ClInclude Include="..\src\applicationModes\applicationmodeintro.h" />
+    <ClInclude Include="..\src\components\component.h" />
+    <ClInclude Include="..\src\components\componentdot.h" />
+    <ClInclude Include="..\src\components\componentrenderable.h" />
+    <ClInclude Include="..\src\core\core.h" />
+    <ClInclude Include="..\src\entities\entity.h" />
+    <ClInclude Include="..\src\eventManager\eventmanager.h" />
+    <ClInclude Include="..\src\eventManager\events.h" />
+    <ClInclude Include="..\src\eventManager\sdlinputmanager.h" />
+    <ClInclude Include="..\src\game\game.h" />
+    <ClInclude Include="..\src\globals\asserts.h" />
+    <ClInclude Include="..\src\globals\globals.h" />
+    <ClInclude Include="..\src\globals\memorycontrol.h" />
+    <ClInclude Include="..\src\graphics\fontmanager.h" />
+    <ClInclude Include="..\src\graphics\sdlfontmanager.h" />
+    <ClInclude Include="..\src\graphics\sdlsprite.h" />
+    <ClInclude Include="..\src\graphics\sprite.h" />
+    <ClInclude Include="..\src\messages\messagereceiver.h" />
+    <ClInclude Include="..\src\messages\messages.h" />
+    <ClInclude Include="..\src\properties\properties.h" />
+    <ClInclude Include="..\src\soundManager\sdlsoundmanager.h" />
+    <ClInclude Include="..\src\soundManager\soundmanager.h" />
+    <ClInclude Include="..\src\windowManager\sdlwindowmanager.h" />
+    <ClInclude Include="..\src\windowManager\windowmanager.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{4F5F19C8-942B-4D67-9DE9-152B285E3605}</ProjectGuid>
+    <RootNamespace>dotgame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>${ProjectDir}../../../lib/glew;${ProjectDir}../../../lib/sdl_2.0.9/include;${ProjectDir}../../../src/core;${ProjectDir}../../../src/globals;${ProjectDir}../../../src/game;${ProjectDir}../../../src/windowManager;${ProjectDir}../../../src/eventManager;${ProjectDir}../../../src/applicationManager;${ProjectDir}../../../src/applicationModes;${ProjectDir}../../../src/soundManager;${ProjectDir}../../../src/properties;${ProjectDir}../../../src/entities;${ProjectDir}../../../src/components;${ProjectDir}../../../src/messages;${ProjectDir}../../../src/graphics;${ProjectDir}../../../lib/sdl_image_2.0.4/include;${ProjectDir}../../../lib/sdl_ttf_2.0.15/include;${ProjectDir}../../../lib/sdl_mixer_2.0.4/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>${ProjectDir}../../../lib/sdl_2.0.9/x86;${ProjectDir}../../../lib/sdl_image_2.0.4/x86;${ProjectDir}../../../lib/sdl_ttf_2.0.15/x86;${ProjectDir}../../../lib/sdl_mixer_2.0.4/x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>${ProjectDir}../../../lib/glew;${ProjectDir}../../../lib/sdl_2.0.9/include;${ProjectDir}../../../src/core;${ProjectDir}../../../src/globals;${ProjectDir}../../../src/game;${ProjectDir}../../../src/windowManager;${ProjectDir}../../../src/eventManager;${ProjectDir}../../../src/applicationManager;${ProjectDir}../../../src/applicationModes;${ProjectDir}../../../src/soundManager;${ProjectDir}../../../src/properties;${ProjectDir}../../../src/entities;${ProjectDir}../../../src/components;${ProjectDir}../../../src/messages;${ProjectDir}../../../src/graphics;${ProjectDir}../../../lib/sdl_image_2.0.4/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>${ProjectDir}../../../lib/sdl_2.0.9/x86;${ProjectDir}../../../lib/sdl_image_2.0.4/x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>NotSet</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../lib/glew</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../lib/glfw</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.win32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../lib/glew</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../lib/glfw</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.win64.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
